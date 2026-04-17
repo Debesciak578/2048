@@ -49,8 +49,40 @@ int main() {
     al_install_keyboard();
 
     ALLEGRO_DISPLAY* display = al_create_display(600, 400);
+    ALLEGRO_FONT* font = al_create_builtin_font();
     ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
     ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
+
+    al_register_event_source(event_queue, al_keyboard_event_source());
+    al_register_event_source(event_queue, al_display_event_source(display));
+    al_register_event_source(event_queue, al_timer_event_source(timer));
+
+    ALLEGRO_EVENT event;
+    bool redrawFrame = true;
+
+    al_start_timer(timer);
+    while (true) {
+        al_wait_for_event(event_queue, &event_queue);
+
+        if (event.type = ALLEGRO_EVENT_TIMER) redrawFrame = true;
+
+        else if ((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)) break;
+
+        if (redrawFrame && al_is_event_queue_empty(event_queue))
+        {
+            al_clear_to_color(al_map_rgb(0, 0, 0));
+            al_draw_text(font, al_map_rgb(255, 255, 255), 0, 0, 0, "Hello world!");
+            al_flip_display();
+
+            redrawFrame = false;
+        }
+    }
+
+
+    al_destroy_font(font);
+    al_destroy_display(display);
+    al_destroy_timer(timer);
+    al_destroy_event_queue(event_queue);
 
     int plansza[ROZMIAR][ROZMIAR];
     srand(time(NULL));
