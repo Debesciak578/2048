@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
 
 #define ROZMIAR 6
 //test 123
@@ -43,6 +45,13 @@ void WygenerujPlansze(int plansza[ROZMIAR][ROZMIAR]) {
 }
 
 int main() {
+    al_init();
+    al_install_keyboard();
+
+    ALLEGRO_DISPLAY* display = al_create_display(600, 400);
+    ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
+    ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
+
     int plansza[ROZMIAR][ROZMIAR];
     srand(time(NULL));
 
