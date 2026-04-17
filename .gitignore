@@ -1,0 +1,83 @@
+.vs/
+*.VC.db
+*.VC.VC.opendb
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+Build results
+
+Debug/
+Release/
+x64/
+x86/
+build/
+out/
+
+CMake (jeśli używasz)
+
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.cmake
+
+Visual Studio CMake
+
+CMakeSettings.json
+
+Logs
+
+*.log
+
+IntelliSense
+
+ipch/
+*.aps
+*.ncb
+*.opendb
+
+Temporary files
+
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+Compiled files (C/C++)
+
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.out
+*.app
+*.lib
+*.a
+*.dylib
+
+Precompiled Headers
+
+*.pch
+
+Debug symbols
+
+*.pdb
+*.idb
+
+Windows specific
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+Mac (jeśli ktoś używa repo na Macu)
+
+.DS_Store
+
+Git
+
+*.orig
