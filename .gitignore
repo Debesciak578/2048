@@ -81,3 +81,5 @@ Mac (jeśli ktoś używa repo na Macu)
 Git
 
 *.orig
+
+packages/
