@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <allegro5/allegro.h>
+#include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 
 #define ROZMIAR 6
 //test 123
@@ -46,6 +47,8 @@ void WygenerujPlansze(int plansza[ROZMIAR][ROZMIAR]) {
 
 int main() {
     al_init();
+    al_init_font_addon();
+    al_init_ttf_addon();
     al_install_keyboard();
 
     ALLEGRO_DISPLAY* display = al_create_display(600, 400);
