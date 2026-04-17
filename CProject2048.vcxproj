@@ -122,7 +122,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="out\build\x64-debug\cmakefiles\4.2.3-msvc3\compileridcxx\CMakeCXXCompilerId.cpp" />
     <ClCompile Include="out\build\x64-debug\cmakefiles\4.2.3-msvc3\compileridc\CMakeCCompilerId.c" />
-    <ClCompile Include="out\build\x64-debug\cmakefiles\showincludes\main.c" />
+    <ClCompile Include="out\build\x64-debug\cmakefiles\showincludes\maintest.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="out\build\x64-debug\cmakefiles\showincludes\foo.h" />
