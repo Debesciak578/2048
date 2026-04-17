@@ -3,8 +3,9 @@
 #include <time.h>
 
 #define ROZMIAR 6
+//test 123
 
-void Stworzplansze(int plansza[ROZMIAR][ROZMIAR]) {
+void StworzPlansze(int plansza[ROZMIAR][ROZMIAR]) {
     for (int i = 0; i < ROZMIAR; i++) {
         for (int j = 0; j < ROZMIAR; j++) {
             plansza[i][j] = 0;
@@ -25,14 +26,14 @@ void WylosujPole(int plansza[ROZMIAR][ROZMIAR]) {
             }
         }
     }
-    int Wylosujgdzie = rand() % liczpuste;
-    int wiersz = puste[Wylosujgdzie][0];
-    int kolumna = puste[Wylosujgdzie][1];
+    int WylosujGdzie = rand() % liczpuste;
+    int wiersz = puste[WylosujGdzie][0];
+    int kolumna = puste[WylosujGdzie][1];
 
     plansza[wiersz][kolumna] = 2;
 }
 
-void Wygenerujplansze(int plansza[ROZMIAR][ROZMIAR]) {
+void WygenerujPlansze(int plansza[ROZMIAR][ROZMIAR]) {
     for (int i = 0; i < ROZMIAR; i++) {
         for (int j = 0; j < ROZMIAR; j++) {
             printf("%7d ", plansza[i][j]);
@@ -45,10 +46,10 @@ int main() {
     int plansza[ROZMIAR][ROZMIAR];
     srand(time(NULL));
 
-    Stworzplansze(plansza);
+    StworzPlansze(plansza);
     WylosujPole(plansza);
     WylosujPole(plansza);
 
-    Wygenerujplansze(plansza);
+    WygenerujPlansze(plansza);
     return 0;
 }
