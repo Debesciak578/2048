@@ -18,15 +18,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="out\build\x64-debug\cmakefiles\4.2.3-msvc3\compileridc\CMakeCCompilerId.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="out\build\x64-debug\cmakefiles\4.2.3-msvc3\compileridcxx\CMakeCXXCompilerId.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="out\build\x64-debug\cmakefiles\showincludes\main.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="out\build\x64-debug\cmakefiles\showincludes\foo.h">
@@ -40,5 +31,6 @@
     <None Include="out\build\x64-debug\cmakefiles\4.2.3-msvc3\CMakeDetermineCompilerABI_CXX.bin">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

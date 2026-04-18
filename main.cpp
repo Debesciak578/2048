@@ -4,27 +4,41 @@
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_primitives.h>
+
 
 
 #define GRID_SIZE 6
 
+struct Cell {
+    int number = 0;
+    float x1 = 0, y1 = 0, x2 = 0, y2 = 0, textX = 0, textY = 0;
+    char numberInCharFormat[8];
+    ALLEGRO_COLOR color;
+} grid;
 
-
-void CreateGrid(int grid[GRID_SIZE][GRID_SIZE]) {
+void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
-            grid[i][j] = 0;
+            grid[i][j].number = 0;
+            grid[i][j].x1 = 105 + i * 150;
+            grid[i][j].y1 = 105 + j * 150;
+            grid[i][j].x2 = 245 + i * 150;
+            grid[i][j].y2 = 245 + j * 150;
+            grid[i][j].textX = 170 + i * 150;
+            grid[i][j].textY = 170 + j * 150;
+            grid[i][j].color = al_map_rgb(255, 255, 255);
         }
     }
 }
 
-void CalculateAndFillRandomCell(int grid[GRID_SIZE][GRID_SIZE]) {
+void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
     int empty[GRID_SIZE * GRID_SIZE][2];
     int empty_counter = 0;
 
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
-            if (grid[i][j] == 0) {
+            if (grid[i][j].number == 0) {
                 empty[empty_counter][0] = i;
                 empty[empty_counter][1] = j;
                 empty_counter++;
@@ -36,15 +50,17 @@ void CalculateAndFillRandomCell(int grid[GRID_SIZE][GRID_SIZE]) {
     int row = empty[generateRandomPoint][0];
     int column = empty[generateRandomPoint][1];
 
-    grid[row][column] = 2;
+    grid[row][column].number = 2;
 }
 
-void GenerateGrid(int grid[GRID_SIZE][GRID_SIZE]) {
+void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font) {
+
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
-            printf("%7d ", grid[i][j]);
+            sprintf(grid[i][j].numberInCharFormat, "%d", grid[i][j].number);
+            al_draw_filled_rounded_rectangle(grid[i][j].x1, grid[i][j].y1, grid[i][j].x2, grid[i][j].y2, 15, 15, grid[i][j].color);
+            al_draw_text(font, al_map_rgb(0,0,0), grid[i][j].textX, grid[i][j].textY, ALLEGRO_ALIGN_CENTRE, grid[i][j].numberInCharFormat);
         }
-        printf("\n\n");
     }
 }
 
@@ -53,8 +69,9 @@ int main() {
     al_init_font_addon();
     al_init_ttf_addon();
     al_install_keyboard();
+    al_init_primitives_addon();
 
-    ALLEGRO_DISPLAY* display = al_create_display(600, 400);
+    ALLEGRO_DISPLAY* display = al_create_display(GRID_SIZE * 150 + 200, GRID_SIZE * 150 + 200);
     ALLEGRO_FONT* font = al_create_builtin_font();
     ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
     ALLEGRO_EVENT_QUEUE* event_queue = al_create_event_queue();
@@ -66,37 +83,34 @@ int main() {
     ALLEGRO_EVENT event;
     bool redrawFrame = true;
 
+    Cell grid[GRID_SIZE][GRID_SIZE];
+    srand(time(NULL));
+
+    CreateGrid(grid);
     al_start_timer(timer);
     while (true) {
         al_wait_for_event(event_queue, &event);
 
         if (event.type = ALLEGRO_EVENT_TIMER) redrawFrame = true;
 
-        else if ((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)) break;
+        //else if ((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)) break;
 
         if (redrawFrame && al_is_event_queue_empty(event_queue))
         {
             al_clear_to_color(al_map_rgb(0, 0, 0));
-            al_draw_text(font, al_map_rgb(255, 255, 255), 0, 0, 0, "Hello world!");
+            
+            DrawGrid(grid, font);
+
             al_flip_display();
 
             redrawFrame = false;
         }
     }
 
-
     al_destroy_font(font);
     al_destroy_display(display);
     al_destroy_timer(timer);
     al_destroy_event_queue(event_queue);
 
-    int grid[GRID_SIZE][GRID_SIZE];
-    srand(time(NULL));
-
-    CreateGrid(grid);
-    CalculateAndFillRandomCell(grid);
-    CalculateAndFillRandomCell(grid);
-
-    GenerateGrid(grid);
     return 0;
 }
