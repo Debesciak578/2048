@@ -17,6 +17,61 @@ struct Cell {
     ALLEGRO_COLOR color;
 } grid;
 
+
+
+void moveGridRight(Cell grid[GRID_SIZE][GRID_SIZE]) {
+    for (int i = 0; i < GRID_SIZE; i++) {
+        for (int j = GRID_SIZE-1; j >= 0; j--) {
+            if (grid[i][j].number != 0 && j < GRID_SIZE-1) {
+
+                while (grid[i][j + 1].number == 0) {
+                    grid[i][j + 1].number = grid[i][j].number;
+                    grid[i][j + 1].color = grid[i][j].color;
+                }
+
+                if (grid[i][j].number == grid[i][j + 1].number) {
+                    grid[i][j + 1].number *= 2;
+                    grid[i][j].number = 0;
+                }
+            }
+        }
+    }
+}
+
+void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE]) {
+    for (int i = 0; i < GRID_SIZE; i++) {
+        for (int j = 0; j < GRID_SIZE; j++) {
+            if (grid[i][j].number != 0 && grid[i][j + 1].number < GRID_SIZE) {
+                grid[i][j + 1].number = grid[i][j].number;
+                grid[i][j + 1].color = grid[i][j].color;
+            }
+        }
+    }
+}
+
+void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE]) {
+    for (int i = 0; i < GRID_SIZE; i++) {
+        for (int j = GRID_SIZE - 1; j >= 0; j--) {
+            if (grid[i][j].number != 0 && grid[i][j + 1].number < GRID_SIZE) {
+                grid[i][j + 1].number = grid[i][j].number;
+                grid[i][j + 1].color = grid[i][j].color;
+            }
+        }
+    }
+}
+
+void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE]) {
+    for (int i = 0; i < GRID_SIZE; i++) {
+        for (int j = GRID_SIZE - 1; j >= 0; j--) {
+            if (grid[i][j].number != 0 && grid[i][j + 1].number < GRID_SIZE) {
+                grid[i][j + 1].number = grid[i][j].number;
+                grid[i][j + 1].color = grid[i][j].color;
+            }
+        }
+    }
+}
+
+
 void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
@@ -59,7 +114,7 @@ void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font) {
         for (int j = 0; j < GRID_SIZE; j++) {
             sprintf(grid[i][j].numberInCharFormat, "%d", grid[i][j].number);
             al_draw_filled_rounded_rectangle(grid[i][j].x1, grid[i][j].y1, grid[i][j].x2, grid[i][j].y2, 15, 15, grid[i][j].color);
-            al_draw_text(font, al_map_rgb(0,0,0), grid[i][j].textX, grid[i][j].textY, ALLEGRO_ALIGN_CENTRE, grid[i][j].numberInCharFormat);
+            if(grid[i][j].number != 0) al_draw_text(font, al_map_rgb(0,0,0), grid[i][j].textX, grid[i][j].textY, ALLEGRO_ALIGN_CENTRE, grid[i][j].numberInCharFormat);
         }
     }
 }
@@ -91,15 +146,14 @@ int main() {
     while (true) {
         al_wait_for_event(event_queue, &event);
 
-        if (event.type = ALLEGRO_EVENT_TIMER) redrawFrame = true;
-
-        //else if ((event.type == ALLEGRO_EVENT_KEY_DOWN) || (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)) break;
+        if (event.type == ALLEGRO_EVENT_KEY_DOWN) redrawFrame = true;
 
         if (redrawFrame && al_is_event_queue_empty(event_queue))
         {
             al_clear_to_color(al_map_rgb(0, 0, 0));
             
             DrawGrid(grid, font);
+            CalculateAndFillRandomCell(grid);
 
             al_flip_display();
 
