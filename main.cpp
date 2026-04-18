@@ -5,41 +5,44 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
-#define ROZMIAR 6
-//test 123
 
-void StworzPlansze(int plansza[ROZMIAR][ROZMIAR]) {
-    for (int i = 0; i < ROZMIAR; i++) {
-        for (int j = 0; j < ROZMIAR; j++) {
-            plansza[i][j] = 0;
+#define GRID_SIZE 6
+
+
+
+void CreateGrid(int grid[GRID_SIZE][GRID_SIZE]) {
+    for (int i = 0; i < GRID_SIZE; i++) {
+        for (int j = 0; j < GRID_SIZE; j++) {
+            grid[i][j] = 0;
         }
     }
 }
 
-void WylosujPole(int plansza[ROZMIAR][ROZMIAR]) {
-    int puste[ROZMIAR * ROZMIAR][2];
-    int liczpuste = 0;
+void CalculateAndFillRandomCell(int grid[GRID_SIZE][GRID_SIZE]) {
+    int empty[GRID_SIZE * GRID_SIZE][2];
+    int empty_counter = 0;
 
-    for (int i = 0; i < ROZMIAR; i++) {
-        for (int j = 0; j < ROZMIAR; j++) {
-            if (plansza[i][j] == 0) {
-                puste[liczpuste][0] = i;
-                puste[liczpuste][1] = j;
-                liczpuste++;
+    for (int i = 0; i < GRID_SIZE; i++) {
+        for (int j = 0; j < GRID_SIZE; j++) {
+            if (grid[i][j] == 0) {
+                empty[empty_counter][0] = i;
+                empty[empty_counter][1] = j;
+                empty_counter++;
             }
         }
     }
-    int WylosujGdzie = rand() % liczpuste;
-    int wiersz = puste[WylosujGdzie][0];
-    int kolumna = puste[WylosujGdzie][1];
 
-    plansza[wiersz][kolumna] = 2;
+    int generateRandomPoint = rand() % empty_counter;
+    int row = empty[generateRandomPoint][0];
+    int column = empty[generateRandomPoint][1];
+
+    grid[row][column] = 2;
 }
 
-void WygenerujPlansze(int plansza[ROZMIAR][ROZMIAR]) {
-    for (int i = 0; i < ROZMIAR; i++) {
-        for (int j = 0; j < ROZMIAR; j++) {
-            printf("%7d ", plansza[i][j]);
+void GenerateGrid(int grid[GRID_SIZE][GRID_SIZE]) {
+    for (int i = 0; i < GRID_SIZE; i++) {
+        for (int j = 0; j < GRID_SIZE; j++) {
+            printf("%7d ", grid[i][j]);
         }
         printf("\n\n");
     }
@@ -87,13 +90,13 @@ int main() {
     al_destroy_timer(timer);
     al_destroy_event_queue(event_queue);
 
-    int plansza[ROZMIAR][ROZMIAR];
+    int grid[GRID_SIZE][GRID_SIZE];
     srand(time(NULL));
 
-    StworzPlansze(plansza);
-    WylosujPole(plansza);
-    WylosujPole(plansza);
+    CreateGrid(grid);
+    CalculateAndFillRandomCell(grid);
+    CalculateAndFillRandomCell(grid);
 
-    WygenerujPlansze(plansza);
+    GenerateGrid(grid);
     return 0;
 }
