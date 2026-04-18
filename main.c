@@ -10,12 +10,12 @@
 
 #define GRID_SIZE 4
 
-struct Cell { //struktura jednej komorki, zawiera liczbe, kolor oraz wspolrzedne rogow tej komorki i jej tekstu
-    int number = 0;
-    float x1 = 0, y1 = 0, x2 = 0, y2 = 0, textX = 0, textY = 0;
+typedef struct { //struktura jednej komorki, zawiera liczbe, kolor oraz wspolrzedne rogow tej komorki i jej tekstu
+    int number;
+    float x1, y1, x2, y2, textX, textY;
     char numberInCharFormat[8];
     ALLEGRO_COLOR color;
-} grid;
+} Cell;
 
 
 void moveGridRight(Cell grid[GRID_SIZE][GRID_SIZE]) {
@@ -252,7 +252,7 @@ int main() {
    
 
     ALLEGRO_EVENT event;
-    bool redrawFrame = true;
+    int redrawFrame = 1;
 
     Cell grid[GRID_SIZE][GRID_SIZE];
     srand(time(NULL));
@@ -267,7 +267,7 @@ int main() {
         al_wait_for_event(event_queue, &event);
 
         if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-            redrawFrame = true;
+            redrawFrame = 1;
             switch (event.keyboard.keycode) {
             case ALLEGRO_KEY_RIGHT:
                 moveType = &moveGridRight;
@@ -282,7 +282,7 @@ int main() {
                 moveType = &moveGridDown;
                 break;
             default:
-                redrawFrame = false;
+                redrawFrame = 0;
             }
         }
 
