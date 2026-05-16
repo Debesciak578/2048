@@ -243,7 +243,7 @@ int main() {
     al_init_primitives_addon();
     al_install_audio();
     al_init_acodec_addon();
-    al_reserve_samples(1);
+    al_reserve_samples(40);
 
     ALLEGRO_DISPLAY* display = al_create_display(GRID_SIZE * 150 + 200, GRID_SIZE * 150 + 200);
     ALLEGRO_FONT* font = al_load_ttf_font("Roboto.ttf", 40, 0);
