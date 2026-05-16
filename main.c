@@ -316,7 +316,7 @@ int main() {
             al_clear_to_color(al_map_rgb(255, 204, 137));
 
             moveType(grid, maxPTR, pointPTR);
-
+            pointCounter = 0;
             for (int i = 0; i < GRID_SIZE; i++) {
                 for (int j = 0; j < GRID_SIZE; j++) {
                     pointCounter += grid[i][j].number;
