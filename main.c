@@ -145,7 +145,7 @@ void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE]) {
     }
 }
 
-void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE]) {
+void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int *maxNumber, int *pointCounter) {
     for (int i = 0; i < GRID_SIZE; i++) {
 
         for (int j = GRID_SIZE - 2; j >= 0; j--) {
@@ -163,10 +163,12 @@ void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE]) {
 
         for (int j = GRID_SIZE - 1; j > 0; j--) {
             if (grid[i][j].number == 0) continue;
+
             if (grid[i][j].number == grid[i][j - 1].number) {
                 grid[i][j].number *= 2;
                 grid[i][j - 1].number = 0;
                 grid[i][j - 1].color = al_map_rgb(255, 255, 255);
+                
             }
         }
 
@@ -249,10 +251,12 @@ int main() {
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
-   
 
     ALLEGRO_EVENT event;
     int redrawFrame = 1;
+
+    int pointCounter = 0;
+    int maxNumber = 0;
 
     Cell grid[GRID_SIZE][GRID_SIZE];
     srand(time(NULL));
@@ -297,6 +301,11 @@ int main() {
             al_flip_display();
 
             redrawFrame = false;
+        }
+
+        if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
+        {
+            break;
         }
     }
 
