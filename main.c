@@ -9,7 +9,7 @@
 
 
 #define GRID_SIZE 4
-
+    
 typedef struct { //struktura jednej komorki, zawiera liczbe, kolor oraz wspolrzedne rogow tej komorki i jej tekstu
     int number;
     float x1, y1, x2, y2, textX, textY;
