@@ -262,7 +262,7 @@ int main() {
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
-    ALLEGRO_SAMPLE* click_sound = al_load_sample("duck.mp3");
+    ALLEGRO_SAMPLE* click_sound = al_load_sample("discord.mp3");
 
 
     ALLEGRO_EVENT event;
