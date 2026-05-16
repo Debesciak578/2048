@@ -5,6 +5,8 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 
 
@@ -248,6 +250,9 @@ int main() {
     al_init_ttf_addon();
     al_install_keyboard();
     al_init_primitives_addon();
+    al_install_audio();
+    al_init_acodec_addon();
+    al_reserve_samples(1);
 
     ALLEGRO_DISPLAY* display = al_create_display(GRID_SIZE * 150 + 200, GRID_SIZE * 150 + 200);
     ALLEGRO_FONT* font = al_load_ttf_font("Roboto.ttf", 40, 0);
@@ -257,6 +262,7 @@ int main() {
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_display_event_source(display));
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
+    ALLEGRO_SAMPLE* click_sound = al_load_sample("duck.mp3");
 
 
     ALLEGRO_EVENT event;
@@ -300,6 +306,9 @@ int main() {
             default:
                 redrawFrame = 0;
             }
+            if (redrawFrame && click_sound) {
+                al_play_sample(click_sound, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            }
         }
 
         if (redrawFrame && al_is_event_queue_empty(event_queue))
@@ -327,7 +336,7 @@ int main() {
             break;
         }
     }
-
+    if (click_sound) al_destroy_sample(click_sound);
     al_destroy_font(font);
     al_destroy_display(display);
     al_destroy_timer(timer);
