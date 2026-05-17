@@ -244,8 +244,8 @@ bool checkLoss(Cell grid[GRID_SIZE][GRID_SIZE]) {
 void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumber, int maxNumber, char pointCounterInChar[], char maxNumberInChar[]) {
 	sprintf(pointCounterInChar, "%d", pointNumber);
 	sprintf(maxNumberInChar, "%d", maxNumber);
-	al_draw_text(font, al_map_rgb(0, 0, 0), 80, 30, ALLEGRO_ALIGN_CENTER, pointCounterInChar);
-	al_draw_text(font, al_map_rgb(0, 0, 0), 80, 150, ALLEGRO_ALIGN_CENTER, maxNumberInChar);
+	al_draw_text(font, al_map_rgb(255, 255, 255), 80, 30, ALLEGRO_ALIGN_CENTER, pointCounterInChar);
+	al_draw_text(font, al_map_rgb(255, 255, 255), 80, 150, ALLEGRO_ALIGN_CENTER, maxNumberInChar);
 	for (int i = 0; i < GRID_SIZE; i++) {
 		for (int j = 0; j < GRID_SIZE; j++) {
 			sprintf(grid[i][j].numberInCharFormat, "%d", grid[i][j].number);
