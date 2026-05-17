@@ -268,12 +268,17 @@ int main() {
     ALLEGRO_EVENT event;
     int redrawFrame = 1;
 
-    int pointCounter = 0;
-    int maxNumber = 0;
-    int* pointPTR = &pointCounter;
-    int* maxPTR = &maxNumber;
-    char pointCounterInChar[12];
-    char maxNumberInChar[12];
+	int pointCounter = 0;
+	int maxNumber = 0;
+	int* pointPTR = &pointCounter;
+	int* maxPTR = &maxNumber;
+	char pointCounterInChar[12];
+	char maxNumberInChar[12];
+	//zmienne do UNDO
+	Cell previousGrid[GRID_SIZE][GRID_SIZE];
+	int previousPointCounter = 0;
+	int previousMaxNumber = 0;
+	bool canUndo = false;
 
     Cell grid[GRID_SIZE][GRID_SIZE];
     srand(time(NULL));
@@ -303,6 +308,9 @@ int main() {
             case ALLEGRO_KEY_DOWN:
                 moveType = &moveGridDown;
                 break;
+			case ALLEGRO_KEY_C://cofanie guzikiem c
+				moveType = NULL;
+				break;
             default:
                 redrawFrame = 0;
             }
@@ -315,15 +323,35 @@ int main() {
         {
             al_clear_to_color(al_map_rgb(255, 204, 137));
 
-            moveType(grid, maxPTR, pointPTR);
-            pointCounter = 0;
-            for (int i = 0; i < GRID_SIZE; i++) {
-                for (int j = 0; j < GRID_SIZE; j++) {
-                    pointCounter += grid[i][j].number;
-                    if (maxNumber < grid[i][j].number) maxNumber = grid[i][j].number;
-                }
-            }
-            CalculateAndFillRandomCell(grid);
+			if (moveType == NULL) {
+				//podmiana na stare wartosci
+				if (canUndo) {
+					for (int i = 0; i < GRID_SIZE; i++)
+						for (int j = 0; j < GRID_SIZE; j++) grid[i][j] = previousGrid[i][j];
+					pointCounter = previousPointCounter;
+					maxNumber = previousMaxNumber;
+					canUndo = false; 
+				}
+			}
+			else {
+				//zapis planszy odpamieci
+				for (int i = 0; i < GRID_SIZE; i++)
+					for (int j = 0; j < GRID_SIZE; j++) previousGrid[i][j] = grid[i][j];
+				previousPointCounter = pointCounter;
+				previousMaxNumber = maxNumber;
+				canUndo = true;
+
+
+				moveType(grid, maxPTR, pointPTR);
+				pointCounter = 0;
+				for (int i = 0; i < GRID_SIZE; i++) {
+					for (int j = 0; j < GRID_SIZE; j++) {
+						pointCounter += grid[i][j].number;
+						if (maxNumber < grid[i][j].number) maxNumber = grid[i][j].number;
+					}
+				}
+				CalculateAndFillRandomCell(grid);
+			}
 
             DrawGrid(grid, font, pointCounter, maxNumber, pointCounterInChar, maxNumberInChar);
             al_flip_display();
