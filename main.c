@@ -275,15 +275,8 @@ int main() {
 	char pointCounterInChar[12];
 	char maxNumberInChar[12];
 
-
-	//zmienne dla przechowania pamieci
-	Cell previousGrid[GRID_SIZE][GRID_SIZE];
-	int previousPointCounter = 0;
-	int previousMaxNumber = 0;
-	bool canUndo = false;
-
-	Cell grid[GRID_SIZE][GRID_SIZE];
-	srand(time(NULL));
+    Cell grid[GRID_SIZE][GRID_SIZE];
+    srand(time(NULL));
 
 	CreateGrid(grid);
 	al_start_timer(timer);
@@ -295,70 +288,42 @@ int main() {
 		al_wait_for_event(event_queue, &event);
 
 
-		if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-			redrawFrame = 1;
-			switch (event.keyboard.keycode) {
-			case ALLEGRO_KEY_RIGHT:
-				moveType = &moveGridRight;
-				break;
-			case ALLEGRO_KEY_LEFT:
-				moveType = &moveGridLeft;
-				break;
-			case ALLEGRO_KEY_UP:
-				moveType = &moveGridUp;
-				break;
-			case ALLEGRO_KEY_DOWN:
-				moveType = &moveGridDown;
-				break;
-			case ALLEGRO_KEY_C:
-				moveType = NULL;
-				break;
-			default:
-				redrawFrame = 0;
-			}
-			if (redrawFrame && click_sound) {
-				al_play_sample(click_sound, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-			}
-		}
+        if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+            redrawFrame = 1;
+            switch (event.keyboard.keycode) {
+            case ALLEGRO_KEY_RIGHT:
+                moveType = &moveGridRight;
+                break;
+            case ALLEGRO_KEY_LEFT:
+                moveType = &moveGridLeft;
+                break;
+            case ALLEGRO_KEY_UP:
+                moveType = &moveGridUp;
+                break;
+            case ALLEGRO_KEY_DOWN:
+                moveType = &moveGridDown;
+                break;
+            default:
+                redrawFrame = 0;
+            }
+            if (redrawFrame && click_sound) {
+                al_play_sample(click_sound, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+            }
+        }
 
 		if (redrawFrame && al_is_event_queue_empty(event_queue))
 		{
 			al_clear_to_color(al_map_rgb(255, 204, 137));
 
-			if (moveType == NULL) {
-				if (canUndo) {
-					for (int i = 0; i < GRID_SIZE; i++) {
-						for (int j = 0; j < GRID_SIZE; j++) {
-							grid[i][j] = previousGrid[i][j]; //przywracanie planszy 
-						}
-					}
-					//podmienianie na poprzednie wartosci
-					pointCounter = previousPointCounter;
-					maxNumber = previousMaxNumber;
-					canUndo = false;
-				}
-			}
-			else {
-				//zapisywanie obecnej planszy do pamieci
-				for (int i = 0; i < GRID_SIZE; i++) {
-					for (int j = 0; j < GRID_SIZE; j++) {
-						previousGrid[i][j] = grid[i][j];
-					}
-				}
-				previousPointCounter = pointCounter;
-				previousMaxNumber = maxNumber;
-				canUndo = true;
-
-				moveType(grid, maxPTR, pointPTR);
-				pointCounter = 0;
-				for (int i = 0; i < GRID_SIZE; i++) {
-					for (int j = 0; j < GRID_SIZE; j++) {
-						pointCounter += grid[i][j].number;
-						if (maxNumber < grid[i][j].number) maxNumber = grid[i][j].number;
-					}
-				}
-				CalculateAndFillRandomCell(grid);
-			}
+            moveType(grid, maxPTR, pointPTR);
+            pointCounter = 0;
+            for (int i = 0; i < GRID_SIZE; i++) {
+                for (int j = 0; j < GRID_SIZE; j++) {
+                    pointCounter += grid[i][j].number;
+                    if (maxNumber < grid[i][j].number) maxNumber = grid[i][j].number;
+                }
+            }
+            CalculateAndFillRandomCell(grid);
 
 			DrawGrid(grid, font, pointCounter, maxNumber, pointCounterInChar, maxNumberInChar);
 			al_flip_display();
