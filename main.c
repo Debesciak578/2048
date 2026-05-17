@@ -7,7 +7,7 @@
 #include <allegro5/allegro_primitives.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
-
+#include <allegro5/allegro_image.h>
 
 
 
@@ -264,6 +264,7 @@ int main() {
 	al_install_audio();
 	al_init_acodec_addon();
 	al_reserve_samples(40);
+	al_init_image_addon();
 
 	ALLEGRO_DISPLAY* display = al_create_display(GRID_SIZE * 150 + 200, GRID_SIZE * 150 + 200);
 	ALLEGRO_FONT* font = al_load_ttf_font("Roboto.ttf", 40, 0);
@@ -274,6 +275,7 @@ int main() {
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	ALLEGRO_SAMPLE* click_sound = al_load_sample("discord.mp3");
+	ALLEGRO_BITMAP* background_img = al_load_bitmap("backg.png");
 
 
 	ALLEGRO_EVENT event;
@@ -352,7 +354,13 @@ int main() {
 
 		if (redrawFrame && al_is_event_queue_empty(event_queue))
 		{
-			al_clear_to_color(al_map_rgb(255, 204, 137));
+			int sizee = GRID_SIZE * 150 + 200;
+			if (background_img) {
+				al_draw_scaled_bitmap(background_img, 0, 0, al_get_bitmap_width(background_img), al_get_bitmap_height(background_img), 0, 0, sizee, sizee, 0);
+			}
+			else {
+				al_clear_to_color(al_map_rgb(255, 204, 137));
+			}
 
 			if (!skipLogic) { 
 				if (moveType == NULL) {
@@ -417,6 +425,7 @@ int main() {
 			break;
 		}
 	}
+	if (background_img) al_destroy_bitmap(background_img);
 	if (click_sound) al_destroy_sample(click_sound);
 	al_destroy_font(font);
 	al_destroy_display(display);
