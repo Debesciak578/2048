@@ -222,12 +222,23 @@ void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 			}
 		}
 	}
-
+	if (empty_counter == 0) return;
 	int generateRandomPoint = rand() % empty_counter;
 	int row = empty[generateRandomPoint][0];
 	int column = empty[generateRandomPoint][1];
 
 	grid[row][column].number = 2;
+}
+//sprawdzenie czy nie ma mozliwosci ruchu
+bool checkLoss(Cell grid[GRID_SIZE][GRID_SIZE]) {
+	for (int i = 0; i < GRID_SIZE; i++) {
+		for (int j = 0; j < GRID_SIZE; j++) {
+			if (grid[i][j].number == 0) return false;
+			if (i + 1 < GRID_SIZE && grid[i][j].number == grid[i + 1][j].number) return false;
+			if (j + 1 < GRID_SIZE && grid[i][j].number == grid[i][j + 1].number) return false;
+		}
+	}
+	return true;
 }
 
 void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumber, int maxNumber, char pointCounterInChar[], char maxNumberInChar[]) {
@@ -243,6 +254,23 @@ void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumb
 		}
 	}
 }
+
+void RestartGame(Cell grid[GRID_SIZE][GRID_SIZE], int* pointCounter, int* maxNumber, bool* gameOver, bool* gameWon,
+	bool* alreadyWon, bool* canUndo, int* previousPointCounter, int* previousMaxNumber)
+{
+	CreateGrid(grid);                  // wyczy?? plansz?        
+	CalculateAndFillRandomCell(grid);  //postaw pierwsz? cyfr?
+
+	*pointCounter = 0;
+	*maxNumber = 0;
+	*previousPointCounter = 0;
+	*previousMaxNumber = 0;
+	*gameOver = false;
+	*gameWon = false;
+	*alreadyWon = false;
+	*canUndo = false;
+}
+
 
 int main() {
 	al_init();
@@ -280,8 +308,13 @@ int main() {
 	int previousMaxNumber = 0;
 	bool canUndo = false;
 
-    Cell grid[GRID_SIZE][GRID_SIZE];
-    srand(time(NULL));
+	bool gameOver = false;
+	bool gameWon = false;
+	bool alreadyWon = false;
+	bool skipLogic = false;
+
+	Cell grid[GRID_SIZE][GRID_SIZE];
+	srand(time(NULL));
 
 	CreateGrid(grid);
 	al_start_timer(timer);
@@ -293,67 +326,108 @@ int main() {
 		al_wait_for_event(event_queue, &event);
 
 
-        if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-            redrawFrame = 1;
-            switch (event.keyboard.keycode) {
-            case ALLEGRO_KEY_RIGHT:
-                moveType = &moveGridRight;
-                break;
-            case ALLEGRO_KEY_LEFT:
-                moveType = &moveGridLeft;
-                break;
-            case ALLEGRO_KEY_UP:
-                moveType = &moveGridUp;
-                break;
-            case ALLEGRO_KEY_DOWN:
-                moveType = &moveGridDown;
-                break;
+		if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+			redrawFrame = 1;
+			switch (event.keyboard.keycode) {
+			case ALLEGRO_KEY_RIGHT:
+				if (gameOver || gameWon) { redrawFrame = 0; break; } //zablokowa³em ruszanie sie jak jest menu 
+				moveType = &moveGridRight;
+				break;
+			case ALLEGRO_KEY_LEFT:
+				if (gameOver || gameWon) { redrawFrame = 0; break; }
+				moveType = &moveGridLeft;
+				break;
+			case ALLEGRO_KEY_UP:
+				if (gameOver || gameWon) { redrawFrame = 0; break; }
+				moveType = &moveGridUp;
+				break;
+			case ALLEGRO_KEY_DOWN:
+				if (gameOver || gameWon) { redrawFrame = 0; break; }
+				moveType = &moveGridDown;
+				break;
 			case ALLEGRO_KEY_C://cofanie guzikiem c
+				if (gameOver || gameWon) { redrawFrame = 0; break; } //blokada cofniecia
 				moveType = NULL;
 				break;
-            default:
-                redrawFrame = 0;
-            }
-            if (redrawFrame && click_sound) {
-                al_play_sample(click_sound, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-            }
-        }
+			case ALLEGRO_KEY_SPACE:
+				if (gameWon) {
+					gameWon = false;
+					alreadyWon = true;
+					skipLogic = true;
+				}
+				else {
+					redrawFrame = 0;
+				}
+				break;
+			case ALLEGRO_KEY_R: //restart gry przy nacisnieciu na R
+				RestartGame(grid, pointPTR, maxPTR, &gameOver, &gameWon, &alreadyWon, &canUndo, &previousPointCounter, &previousMaxNumber);
+				skipLogic = true;
+				break;
+			default:
+				redrawFrame = 0;
+			}
+			if (redrawFrame && click_sound) {
+				al_play_sample(click_sound, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
+		}
 
 		if (redrawFrame && al_is_event_queue_empty(event_queue))
 		{
 			al_clear_to_color(al_map_rgb(255, 204, 137));
 
-			if (moveType == NULL) {
-				//podmiana na stare wartosci
-				if (canUndo) {
-					for (int i = 0; i < GRID_SIZE; i++)
-						for (int j = 0; j < GRID_SIZE; j++) grid[i][j] = previousGrid[i][j];
-					pointCounter = previousPointCounter;
-					maxNumber = previousMaxNumber;
-					canUndo = false; 
-				}
-			}
-			else {
-				//zapis planszy odpamieci
-				for (int i = 0; i < GRID_SIZE; i++)
-					for (int j = 0; j < GRID_SIZE; j++) previousGrid[i][j] = grid[i][j];
-				previousPointCounter = pointCounter;
-				previousMaxNumber = maxNumber;
-				canUndo = true;
-
-
-				moveType(grid, maxPTR, pointPTR);
-				pointCounter = 0;
-				for (int i = 0; i < GRID_SIZE; i++) {
-					for (int j = 0; j < GRID_SIZE; j++) {
-						pointCounter += grid[i][j].number;
-						if (maxNumber < grid[i][j].number) maxNumber = grid[i][j].number;
+			if (!skipLogic) {
+				if (moveType == NULL) {
+					//podmiana na stare wartosci
+					if (canUndo) {
+						for (int i = 0; i < GRID_SIZE; i++)
+							for (int j = 0; j < GRID_SIZE; j++) grid[i][j] = previousGrid[i][j];
+						pointCounter = previousPointCounter;
+						maxNumber = previousMaxNumber;
+						canUndo = false;
 					}
 				}
-				CalculateAndFillRandomCell(grid);
+				else {
+					if (!gameOver && !gameWon) {
+						//zapis planszy odpamieci
+						for (int i = 0; i < GRID_SIZE; i++)
+							for (int j = 0; j < GRID_SIZE; j++) previousGrid[i][j] = grid[i][j];
+						previousPointCounter = pointCounter;
+						previousMaxNumber = maxNumber;
+						canUndo = true;
+
+
+						moveType(grid, maxPTR, pointPTR);
+						pointCounter = 0;
+						for (int i = 0; i < GRID_SIZE; i++) {
+							for (int j = 0; j < GRID_SIZE; j++) {
+								pointCounter += grid[i][j].number;
+								if (maxNumber < grid[i][j].number) maxNumber = grid[i][j].number;
+							}
+						}
+						CalculateAndFillRandomCell(grid);
+
+						//sprawdzenie czy wygrana lub przegrana
+						if (maxNumber >= 2048 && !alreadyWon) gameWon = true;
+						if (checkLoss(grid)) gameOver = true;
+					}
+				}
 			}
+			skipLogic = false;
 
 			DrawGrid(grid, font, pointCounter, maxNumber, pointCounterInChar, maxNumberInChar);
+
+			//wypisanie ekranow przegranej i wygranej
+			int size = GRID_SIZE * 150 + 200;
+			if (gameOver) {
+				al_draw_filled_rectangle(0, 0, size, size, al_map_rgba(0, 0, 0, 210));
+				al_draw_text(font, al_map_rgb(255, 50, 50), size / 2, size / 2, ALLEGRO_ALIGN_CENTER, "PRZEGRANA!");
+			}
+			else if (gameWon) {
+				al_draw_filled_rectangle(0, 0, size, size, al_map_rgba(237, 194, 46, 200));
+				al_draw_text(font, al_map_rgb(255, 255, 255), size / 2, size / 2 - 30, ALLEGRO_ALIGN_CENTER, "WYGRANA!");
+			}
+
+
 			al_flip_display();
 
 			redrawFrame = false;
