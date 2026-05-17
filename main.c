@@ -255,6 +255,23 @@ void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumb
 	}
 }
 
+void RestartGame(Cell grid[GRID_SIZE][GRID_SIZE], int* pointCounter, int* maxNumber, bool* gameOver, bool* gameWon,
+	bool* alreadyWon, bool* canUndo, int* previousPointCounter, int* previousMaxNumber)
+{
+	CreateGrid(grid);                  // wyczy?? plansz?        
+	CalculateAndFillRandomCell(grid);  //postaw pierwsz? cyfr?
+
+	*pointCounter = 0;
+	*maxNumber = 0;
+	*previousPointCounter = 0;
+	*previousMaxNumber = 0;
+	*gameOver = false;
+	*gameWon = false;
+	*alreadyWon = false;
+	*canUndo = false;
+}
+
+
 int main() {
 	al_init();
 	al_init_font_addon();
@@ -298,8 +315,8 @@ int main() {
 	bool alreadyWon = false;
 	bool skipLogic = false;
 
-    Cell grid[GRID_SIZE][GRID_SIZE];
-    srand(time(NULL));
+	Cell grid[GRID_SIZE][GRID_SIZE];
+	srand(time(NULL));
 
 	CreateGrid(grid);
 	al_start_timer(timer);
@@ -311,30 +328,30 @@ int main() {
 		al_wait_for_event(event_queue, &event);
 
 
-        if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
-            redrawFrame = 1;
+		if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+			redrawFrame = 1;
 			switch (event.keyboard.keycode) {
 			case ALLEGRO_KEY_RIGHT:
 				if (gameOver || gameWon) { redrawFrame = 0; break; } //zablokowa³em ruszanie sie jak jest menu 
 				moveType = &moveGridRight;
 				break;
 			case ALLEGRO_KEY_LEFT:
-				if (gameOver || gameWon) { redrawFrame = 0; break; } 
+				if (gameOver || gameWon) { redrawFrame = 0; break; }
 				moveType = &moveGridLeft;
 				break;
 			case ALLEGRO_KEY_UP:
-				if (gameOver || gameWon) { redrawFrame = 0; break; } 
+				if (gameOver || gameWon) { redrawFrame = 0; break; }
 				moveType = &moveGridUp;
 				break;
 			case ALLEGRO_KEY_DOWN:
-				if (gameOver || gameWon) { redrawFrame = 0; break; } 
+				if (gameOver || gameWon) { redrawFrame = 0; break; }
 				moveType = &moveGridDown;
 				break;
 			case ALLEGRO_KEY_C://cofanie guzikiem c
 				if (gameOver || gameWon) { redrawFrame = 0; break; } //blokada cofniecia
 				moveType = NULL;
 				break;
-			case ALLEGRO_KEY_SPACE: 
+			case ALLEGRO_KEY_SPACE:
 				if (gameWon) {
 					gameWon = false;
 					alreadyWon = true;
@@ -344,13 +361,17 @@ int main() {
 					redrawFrame = 0;
 				}
 				break;
+			case ALLEGRO_KEY_R: //restart gry przy nacisnieciu na R
+				RestartGame(grid, pointPTR, maxPTR, &gameOver, &gameWon, &alreadyWon, &canUndo, &previousPointCounter, &previousMaxNumber);
+				skipLogic = true;
+				break;
 			default:
 				redrawFrame = 0;
 			}
-            if (redrawFrame && click_sound) {
-                al_play_sample(click_sound, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-            }
-        }
+			if (redrawFrame && click_sound) {
+				al_play_sample(click_sound, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+			}
+		}
 
 		if (redrawFrame && al_is_event_queue_empty(event_queue))
 		{
@@ -362,7 +383,7 @@ int main() {
 				al_clear_to_color(al_map_rgb(255, 204, 137));
 			}
 
-			if (!skipLogic) { 
+			if (!skipLogic) {
 				if (moveType == NULL) {
 					//podmiana na stare wartosci
 					if (canUndo) {
@@ -370,11 +391,11 @@ int main() {
 							for (int j = 0; j < GRID_SIZE; j++) grid[i][j] = previousGrid[i][j];
 						pointCounter = previousPointCounter;
 						maxNumber = previousMaxNumber;
-						canUndo = false; 
+						canUndo = false;
 					}
 				}
 				else {
-					if (!gameOver && !gameWon) { 
+					if (!gameOver && !gameWon) {
 						//zapis planszy odpamieci
 						for (int i = 0; i < GRID_SIZE; i++)
 							for (int j = 0; j < GRID_SIZE; j++) previousGrid[i][j] = grid[i][j];
@@ -399,21 +420,21 @@ int main() {
 					}
 				}
 			}
-			skipLogic = false; 
+			skipLogic = false;
 
 			DrawGrid(grid, font, pointCounter, maxNumber, pointCounterInChar, maxNumberInChar);
 
 			//wypisanie ekranow przegranej i wygranej
-			int size = GRID_SIZE * 150 + 200; 
+			int size = GRID_SIZE * 150 + 200;
 			if (gameOver) {
 				al_draw_filled_rectangle(0, 0, size, size, al_map_rgba(0, 0, 0, 210));
 				al_draw_text(font, al_map_rgb(255, 50, 50), size / 2, size / 2, ALLEGRO_ALIGN_CENTER, "PRZEGRANA!");
 			}
 			else if (gameWon) {
-				al_draw_filled_rectangle(0, 0, size, size, al_map_rgba(237, 194, 46, 200)); 
+				al_draw_filled_rectangle(0, 0, size, size, al_map_rgba(237, 194, 46, 200));
 				al_draw_text(font, al_map_rgb(255, 255, 255), size / 2, size / 2 - 30, ALLEGRO_ALIGN_CENTER, "WYGRANA!");
 			}
-			
+
 
 			al_flip_display();
 
