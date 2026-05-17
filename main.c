@@ -258,8 +258,8 @@ void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumb
 void RestartGame(Cell grid[GRID_SIZE][GRID_SIZE], int* pointCounter, int* maxNumber, bool* gameOver, bool* gameWon,
 	bool* alreadyWon, bool* canUndo, int* previousPointCounter, int* previousMaxNumber)
 {
-	CreateGrid(grid);                  // wyczy?? plansz?        
-	CalculateAndFillRandomCell(grid);  //postaw pierwsz? cyfr?
+	CreateGrid(grid);                         
+	CalculateAndFillRandomCell(grid);  
 
 	*pointCounter = 0;
 	*maxNumber = 0;
