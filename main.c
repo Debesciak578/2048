@@ -8,11 +8,8 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 
-
-
-
 #define GRID_SIZE 4
-    
+
 typedef struct { //struktura jednej komorki, zawiera liczbe, kolor oraz wspolrzedne rogow tej komorki i jej tekstu
     int number;
     float x1, y1, x2, y2, textX, textY;
@@ -20,14 +17,10 @@ typedef struct { //struktura jednej komorki, zawiera liczbe, kolor oraz wspolrze
     ALLEGRO_COLOR color;
 } Cell;
 
-
 void moveGridRight(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter) {
     for (int i = 0; i < GRID_SIZE; i++) {
-
-        // krok 1 - przesuwamy wszystko w prawo
         for (int j = GRID_SIZE - 2; j >= 0; j--) {
             if (grid[j][i].number == 0) continue;
-
             int cur = j;
             while (cur + 1 < GRID_SIZE && grid[cur + 1][i].number == 0) {
                 grid[cur + 1][i].number = grid[cur][i].number;
@@ -37,22 +30,16 @@ void moveGridRight(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCo
                 cur++;
             }
         }
-
-        // krok 2 - polaczamy jednakowe komorki
         for (int j = GRID_SIZE - 1; j > 0; j--) {
             if (grid[j][i].number == 0) continue;
             if (grid[j][i].number == grid[j - 1][i].number) {
                 grid[j][i].number *= 2;
                 grid[j - 1][i].number = 0;
                 grid[j - 1][i].color = al_map_rgb(255, 255, 255);
-
             }
         }
-
-        // krok 3 - znowu przesuwamy wszystko w prawo zeby pozbyc sie dziur
         for (int j = GRID_SIZE - 2; j >= 0; j--) {
             if (grid[j][i].number == 0) continue;
-
             int cur = j;
             while (cur + 1 < GRID_SIZE && grid[cur + 1][i].number == 0) {
                 grid[cur + 1][i].number = grid[cur][i].number;
@@ -65,14 +52,10 @@ void moveGridRight(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCo
     }
 }
 
-
 void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter) {
     for (int i = 0; i < GRID_SIZE; i++) {
-
-        // krok 1 - przesuwamy wszystko w lewo
         for (int j = 2; j < GRID_SIZE; j++) {
             if (grid[j][i].number == 0) continue;
-
             int cur = j;
             while (cur - 1 >= 0 && grid[cur - 1][i].number == 0) {
                 grid[cur - 1][i].number = grid[cur][i].number;
@@ -82,22 +65,16 @@ void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
                 cur--;
             }
         }
-
-        // krok 2 - polaczamy jednakowe komorki
         for (int j = 0; j < GRID_SIZE; j++) {
             if (grid[j][i].number == 0) continue;
             if (grid[j][i].number == grid[j + 1][i].number) {
                 grid[j][i].number *= 2;
                 grid[j + 1][i].number = 0;
                 grid[j + 1][i].color = al_map_rgb(255, 255, 255);
-
             }
         }
-
-        // krok 3 - znowu przesuwamy wszystko w lewo zeby pozbyc sie dziur
         for (int j = 1; j < GRID_SIZE; j++) {
             if (grid[j][i].number == 0) continue;
-
             int cur = j;
             while (cur - 1 >= 0 && grid[cur - 1][i].number == 0) {
                 grid[cur - 1][i].number = grid[cur][i].number;
@@ -112,10 +89,8 @@ void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
 
 void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter) {
     for (int i = 0; i < GRID_SIZE; i++) {
-
         for (int j = 1; j < GRID_SIZE; j++) {
             if (grid[i][j].number == 0) continue;
-
             int cur = j;
             while (cur - 1 >= 0 && grid[i][cur - 1].number == 0) {
                 grid[i][cur - 1].number = grid[i][cur].number;
@@ -125,20 +100,16 @@ void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCount
                 cur--;
             }
         }
-
         for (int j = 0; j < GRID_SIZE - 1; j++) {
             if (grid[i][j].number == 0) continue;
             if (grid[i][j].number == grid[i][j + 1].number) {
                 grid[i][j].number *= 2;
                 grid[i][j + 1].number = 0;
                 grid[i][j + 1].color = al_map_rgb(255, 255, 255);
-
             }
         }
-
         for (int j = 1; j < GRID_SIZE; j++) {
             if (grid[i][j].number == 0) continue;
-
             int cur = j;
             while (cur - 1 >= 0 && grid[i][cur - 1].number == 0) {
                 grid[i][cur - 1].number = grid[i][cur].number;
@@ -151,12 +122,10 @@ void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCount
     }
 }
 
-void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int *maxNumber, int *pointCounter) {
+void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter) {
     for (int i = 0; i < GRID_SIZE; i++) {
-
         for (int j = GRID_SIZE - 2; j >= 0; j--) {
             if (grid[i][j].number == 0) continue;
-
             int cur = j;
             while (cur + 1 < GRID_SIZE && grid[i][cur + 1].number == 0) {
                 grid[i][cur + 1].number = grid[i][cur].number;
@@ -166,21 +135,16 @@ void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int *maxNumber, int *pointCou
                 cur++;
             }
         }
-
         for (int j = GRID_SIZE - 1; j > 0; j--) {
             if (grid[i][j].number == 0) continue;
-
             if (grid[i][j].number == grid[i][j - 1].number) {
                 grid[i][j].number *= 2;
                 grid[i][j - 1].number = 0;
                 grid[i][j - 1].color = al_map_rgb(255, 255, 255);
-
             }
         }
-
         for (int j = GRID_SIZE - 2; j >= 0; j--) {
             if (grid[i][j].number == 0) continue;
-
             int cur = j;
             while (cur + 1 < GRID_SIZE && grid[i][cur + 1].number == 0) {
                 grid[i][cur + 1].number = grid[i][cur].number;
@@ -192,7 +156,6 @@ void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int *maxNumber, int *pointCou
         }
     }
 }
-
 
 void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
     for (int i = 0; i < GRID_SIZE; i++) {
@@ -233,13 +196,13 @@ void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumber, int maxNumber, char pointCounterInChar[], char maxNumberInChar[]) {
     sprintf(pointCounterInChar, "%d", pointNumber);
     sprintf(maxNumberInChar, "%d", maxNumber);
-    al_draw_text(font, al_map_rgb(0, 0, 0), 80, 30, ALLEGRO_ALIGN_CENTER,  pointCounterInChar);
+    al_draw_text(font, al_map_rgb(0, 0, 0), 80, 30, ALLEGRO_ALIGN_CENTER, pointCounterInChar);
     al_draw_text(font, al_map_rgb(0, 0, 0), 80, 150, ALLEGRO_ALIGN_CENTER, maxNumberInChar);
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
             sprintf(grid[i][j].numberInCharFormat, "%d", grid[i][j].number);
             al_draw_filled_rounded_rectangle(grid[i][j].x1, grid[i][j].y1, grid[i][j].x2, grid[i][j].y2, 15, 15, grid[i][j].color);
-            if(grid[i][j].number != 0) al_draw_text(font, al_map_rgb(0,0,0), grid[i][j].textX, grid[i][j].textY, ALLEGRO_ALIGN_CENTRE, grid[i][j].numberInCharFormat);
+            if (grid[i][j].number != 0) al_draw_text(font, al_map_rgb(0, 0, 0), grid[i][j].textX, grid[i][j].textY, ALLEGRO_ALIGN_CENTRE, grid[i][j].numberInCharFormat);
         }
     }
 }
@@ -264,7 +227,6 @@ int main() {
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
     ALLEGRO_SAMPLE* click_sound = al_load_sample("discord.mp3");
 
-
     ALLEGRO_EVENT event;
     int redrawFrame = 1;
 
@@ -274,6 +236,12 @@ int main() {
     int* maxPTR = &maxNumber;
     char pointCounterInChar[12];
     char maxNumberInChar[12];
+
+   //tu zapisujemy poprzednie wartosci
+    Cell previousGrid[GRID_SIZE][GRID_SIZE];
+    int previousPointCounter = 0;
+    int previousMaxNumber = 0;
+    bool UNDO = false;
 
     Cell grid[GRID_SIZE][GRID_SIZE];
     srand(time(NULL));
@@ -287,22 +255,14 @@ int main() {
     while (true) {
         al_wait_for_event(event_queue, &event);
 
-
         if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
             redrawFrame = 1;
             switch (event.keyboard.keycode) {
-            case ALLEGRO_KEY_RIGHT:
-                moveType = &moveGridRight;
-                break;
-            case ALLEGRO_KEY_LEFT:
-                moveType = &moveGridLeft;
-                break;
-            case ALLEGRO_KEY_UP:
-                moveType = &moveGridUp;
-                break;
-            case ALLEGRO_KEY_DOWN:
-                moveType = &moveGridDown;
-                break;
+            case ALLEGRO_KEY_RIGHT: moveType = &moveGridRight; break;
+            case ALLEGRO_KEY_LEFT:  moveType = &moveGridLeft;  break;
+            case ALLEGRO_KEY_UP:    moveType = &moveGridUp;    break;
+            case ALLEGRO_KEY_DOWN:  moveType = &moveGridDown;  break;
+            case ALLEGRO_KEY_C:     moveType = NULL;           break;
             default:
                 redrawFrame = 0;
             }
@@ -315,15 +275,35 @@ int main() {
         {
             al_clear_to_color(al_map_rgb(255, 204, 137));
 
-            moveType(grid, maxPTR, pointPTR);
-            pointCounter = 0;
-            for (int i = 0; i < GRID_SIZE; i++) {
-                for (int j = 0; j < GRID_SIZE; j++) {
-                    pointCounter += grid[i][j].number;
-                    if (maxNumber < grid[i][j].number) maxNumber = grid[i][j].number;
+            if (moveType == NULL) {
+                //powrot do poprzedniej planszy
+                if (UNDO) {
+                    for (int i = 0; i < GRID_SIZE; i++)
+                        for (int j = 0; j < GRID_SIZE; j++) grid[i][j] = previousGrid[i][j];
+                    pointCounter = previousPointCounter;
+                    maxNumber = previousMaxNumber;
+                    UNDO = false; 
                 }
             }
-            CalculateAndFillRandomCell(grid);
+            else {
+               //zapis planszy do pamieci
+                for (int i = 0; i < GRID_SIZE; i++)
+                    for (int j = 0; j < GRID_SIZE; j++) previousGrid[i][j] = grid[i][j];
+                previousPointCounter = pointCounter;
+                previousMaxNumber = maxNumber;
+                UNDO = true;
+
+               
+                moveType(grid, maxPTR, pointPTR);
+                pointCounter = 0;
+                for (int i = 0; i < GRID_SIZE; i++) {
+                    for (int j = 0; j < GRID_SIZE; j++) {
+                        pointCounter += grid[i][j].number;
+                        if (maxNumber < grid[i][j].number) maxNumber = grid[i][j].number;
+                    }
+                }
+                CalculateAndFillRandomCell(grid);
+            }
 
             DrawGrid(grid, font, pointCounter, maxNumber, pointCounterInChar, maxNumberInChar);
             al_flip_display();
