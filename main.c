@@ -1,7 +1,7 @@
 /*****************************************************************//**
  * \file   main.c
  * \brief  Plik zawierajacy wszystkie (oprocz biblioteki Allegro) naglowki, funkcje, zmienne i kod zrodlowy dla gry 2048
- * 
+ *
  * \author Zespol "Zucyki": Bartek Anton Olgierd
  * \date   May 2026
  *********************************************************************/
@@ -19,25 +19,25 @@
 #include <allegro5/allegro_image.h>
 
 
-/**
- * Zmienna globalna ktora odpowiada za ilosc komorek w grze oraz rozmiar okna gry tworzonego przez Allegro (zmienic na zmienna lokalna?).
- */
+ /**
+  * Zmienna globalna ktora odpowiada za ilosc komorek w grze oraz rozmiar okna gry tworzonego przez Allegro (zmienic na zmienna lokalna?).
+  */
 #define GRID_SIZE 4
 
-/**
-    @struct Cell
-    @brief  Struktura pojedynczej komorki
-	@param number Wartosc komorki, na ktorej wykonujemy wszystkie obliczenia.
-	@param x1 Wspolrzedna x w lewym gornym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
-	@param y1 Wspolrzedna y w lewym gornym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
-	@param x2 Wspolrzedna x w prawym dolnym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
-	@param y2 Wspolrzedna y w prawym odlnym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
-	@param textX Wspolrzedna x, potrzebna dla wyznaczenia miejsca wyswietlenia wartosci zamieszczonej w parametrze number
-	@param texty Wspolrzedna y, potrzebna dla wyznaczenia miejsca dla wyswietlenia wartosci zamieszczonej w parametrze number
-	@param numberInCharFormat Wartosc komorki, konwertowana w typ char[] dla mozliwosci wyswietlenia tej komorki za pomoca Allegro
-	@param color Kolor tej komorki, zalezy od jej wartosci
-**/
-typedef struct { 
+  /**
+	  @struct Cell
+	  @brief  Struktura pojedynczej komorki
+	  @param number Wartosc komorki, na ktorej wykonujemy wszystkie obliczenia.
+	  @param x1 Wspolrzedna x w lewym gornym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
+	  @param y1 Wspolrzedna y w lewym gornym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
+	  @param x2 Wspolrzedna x w prawym dolnym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
+	  @param y2 Wspolrzedna y w prawym odlnym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
+	  @param textX Wspolrzedna x, potrzebna dla wyznaczenia miejsca wyswietlenia wartosci zamieszczonej w parametrze number
+	  @param texty Wspolrzedna y, potrzebna dla wyznaczenia miejsca dla wyswietlenia wartosci zamieszczonej w parametrze number
+	  @param numberInCharFormat Wartosc komorki, konwertowana w typ char[] dla mozliwosci wyswietlenia tej komorki za pomoca Allegro
+	  @param color Kolor tej komorki, zalezy od jej wartosci
+  **/
+typedef struct {
 	int number;
 	float x1, y1, x2, y2, textX, textY;
 	char numberInCharFormat[8];
@@ -48,18 +48,18 @@ typedef struct {
  * @brief Funkcja dla przesuniecia komorek w prawo.
  * @details
  * Dziala w 4 kroki:
- * 
+ *
  * 1 -> "otwiera" petle for ktora odpowiada za wierszy macierzy parametru Cell grid[][]
- * 
- * 2 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0, 
- * w petli while "przesuwa" wszystkie wartosci o jedna komorke w prawo, przypisujac elementy number 
- * i color struktury Cell z komorki z indeksem cur do komorki cur + 1 
+ *
+ * 2 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
+ * w petli while "przesuwa" wszystkie wartosci o jedna komorke w prawo, przypisujac elementy number
+ * i color struktury Cell z komorki z indeksem cur do komorki cur + 1
  * ustawiajac number z komorki cur  na 0 i color komorki cur na 255, 255, 255, czyli kolor bialy
- * 
+ *
  * 3 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
  * jesli komorki z indeksami j i j - 1 sa jednakowe, number komorki j - 1 ustawia sie na 0,
  * a number komorki j mnozy sie na 2
- * 
+ *
  * 4 -> powtorzenie kroku 2 dla usuniecia dziur pomiedzy komorkami utworzonymi po polaczeniu jednakowych komorek
  * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
  * \param maxNumber Zmienna wskazujaca na licznik maksymalnej wartosci obecnej na planszy dla jego podalszej zmiany za warunku zdobycia wartosci wyzszej od terazniejszego maksymuma (na razie nie uzywany)
@@ -301,19 +301,19 @@ void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
 
 /**
  * @brief Funkcja wypelniajaca wszystkie dane struktur Cell.
- * 
+ *
  * Chociaz nazwa mowi o "stworzeniu" planszy, naprawde funkcja poprostu zamiena wartosci na defaultowe.
- * 
+ *
  * Za pomoca petli for zagniezdionej w petli for przechodzi przez kazda strukture Cell i wypelnia jej dane:
- * 
+ *
  * Ustawia number na 0
- * 
+ *
  * Wylicza wszystkie wspolrzedne rogow dla zgodnie z rozmiarami planszy wyznaczonej przez GRID_SIZE
- * 
+ *
  * Wylicza wspolrzedne dla odrysowania wartosci number jako tekstu
- * 
+ *
  * Ustawia color na 255,255,255 (bialy)
- * 
+ *
  * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
  */
 void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
@@ -331,6 +331,21 @@ void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	}
 }
 
+
+/**
+ * @brief Funkcja szuka wolnych komurek i losowo wybiera jedna z nich, w ktorej ustawia wartosc 2.
+ *
+ * Przeszukuje cala plansze i zapisuje wspolrzedne wszystkich komorek z number == 0 do tablicy empty, a potem losuje liczbe od 0 do empty_counter,
+ * ktora jest liczba wolnych komorek, i ustawia wartosc 2 w tej komorce
+ *
+ * Jesli nie ma wolnych komorek, funkcja po prostu sie konczy
+ *
+ * Ta funkcja jest wywolywana po kazdym ruchu, zeby dodac nowa komorke do planszy
+ *
+ * Ta funkcja jest tez wywolywana na poczatku gry, zeby dodac pierwsza komorke do planszy
+ *
+ * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+ */
 void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	int empty[GRID_SIZE * GRID_SIZE][2];
 	int empty_counter = 0;
@@ -351,7 +366,22 @@ void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 
 	grid[row][column].number = 2;
 }
-//sprawdzenie czy nie ma mozliwosci ruchu
+
+
+/**
+ * @brief Sprawdzenie czy jest mozliwosc ruchu.
+ *
+ * Funkcja przechodzi przez cala plansze i sprawdza czy jest jakas komorka z number == 0, jesli tak, to zwraca false, bo gra nie jest przegrana
+ *
+ * Jesli nie ma komorek z number == 0, funkcja sprawdza czy sa jakies dwie sasiednie komorki o tej samej wartosci, jesli tak, to tez zwraca false, bo gra nie jest przegrana
+ *
+ * Jesli nie ma ani wolnych komorek, ani sasiednich komorek o tej samej wartosci, funkcja zwraca true, bo gra jest przegrana
+ *
+ * Ta funkcja jest wywolywana po kazdym ruchu, zeby sprawdzic czy gra nie jest przegrana
+ *
+ * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+ * \return Zwraca wartosc true typu gra jest przegrana, false jesli sa mozliwe ruchy
+ */
 bool checkLoss(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	for (int i = 0; i < GRID_SIZE; i++) {
 		for (int j = 0; j < GRID_SIZE; j++) {
@@ -363,6 +393,30 @@ bool checkLoss(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	return true;
 }
 
+
+/**
+ * @brief Funkcja rysujaca cala plansze.
+ *
+ * Funkcja rysujaca cala plansze, czyli wszystkie komorki i liczby w nich zawarte, a takze licznik punktow i maksymalnej wartosci
+ *
+ * Dziala w 3 krokach:
+ *
+ * 1 -> Konwersja licznikow punktow i maksymalnej wartosci do formatu char[] dla mozliwosci wyswietlenia ich za pomoca Allegro
+ *
+ * 2 -> Rysowanie licznikow punktow i maksymalnej wartosci za pomoca al_draw_text
+ *
+ * 3 -> Przechodzenie przez cala plansze za pomoca petli for zagniezdzonej w petle for, konwersja wartosci number kazdej komorki do formatu char[] i rysowanie kazdej komorki za pomoca al_draw_filled_rounded_rectangle, a jesli number komorki jest rozny od 0, to rysowanie tej wartosci za pomoca al_draw_text
+ *
+ *
+ * Ta funkcja jest wywolywana w kazdej klatce, zeby odrysowac cala plansze i wszystkie komorki
+ *
+ * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+ * \param font Zmienna przechowujaca cechy tekstu do wyswietlenia
+ * \param pointNumber Licznik punktow
+ * \param maxNumber Maksymalna wartosc na plansze
+ * \param pointCounterInChar Wartosc z licznika punktow przepisana w postaci char[] dla umozliwienia wypisania tej wartosci na ekran
+ * \param maxNumberInChar Wartosc maksymuma przepisana w postaci char[] dla umozliwienia wypisania jego na ekran
+ */
 void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumber, int maxNumber, char pointCounterInChar[], char maxNumberInChar[]) {
 	sprintf(pointCounterInChar, "%d", pointNumber);
 	sprintf(maxNumberInChar, "%d", maxNumber);
@@ -377,11 +431,36 @@ void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumb
 	}
 }
 
+/**
+ * @brief Funkcja dla restartu gry.
+ *
+ * Funkcja dla restartu gry, wywolywana przy nacisnieciu na R
+ *
+ * Dziala w 3 krokach:
+ *
+ * 1 -> Wywolanie funkcji CreateGrid dla ustawienia wszystkich wartosci struktur Cell na defaultowe
+ *
+ * 2 -> Wywolanie funkcji CalculateAndFillRandomCell dla dodania pierwszej komorki do planszy
+ *
+ * 3 -> Ustawienie wszystkich zmiennych odpowiedzialnych za licznik punktow, maksymalna wartosc, stan gry, mozliwosc cofania, itd na defaultowe
+ *
+ * Ta funkcja jest wywolywana przy nacisnieciu na R, zeby zrestartowac gre
+ *
+ * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+ * \param pointCounter Licznik punktow
+ * \param maxNumber Maksymalna wartosc na plansze
+ * \param gameOver True jesli gra przegrana, false jesli nie
+ * \param gameWon True jesli gra wygrana, false jesli nie
+ * \param alreadyWon Sprawdzenie czy gra jest wygrana
+ * \param canUndo Sprawdzenie czy jest mozliwosc cofniecia ruchu
+ * \param previousPointCounter Licznik punktow do ostatniego ruchu
+ * \param previousMaxNumber Maksymum na plansze do ostatniego ruchu
+ */
 void RestartGame(Cell grid[GRID_SIZE][GRID_SIZE], int* pointCounter, int* maxNumber, bool* gameOver, bool* gameWon,
 	bool* alreadyWon, bool* canUndo, int* previousPointCounter, int* previousMaxNumber)
 {
 	CreateGrid(grid);
-	CalculateAndFillRandomCell(grid);  
+	CalculateAndFillRandomCell(grid);
 
 	*pointCounter = 0;
 	*maxNumber = 0;
@@ -472,16 +551,6 @@ int main() {
 			case ALLEGRO_KEY_C://cofanie guzikiem c
 				if (gameOver || gameWon) { redrawFrame = 0; break; } //blokada cofniecia
 				moveType = NULL;
-				break;
-			case ALLEGRO_KEY_SPACE:
-				if (gameWon) {
-					gameWon = false;
-					alreadyWon = true;
-					skipLogic = true;
-				}
-				else {
-					redrawFrame = 0;
-				}
 				break;
 			case ALLEGRO_KEY_R: //restart gry przy nacisnieciu na R
 				RestartGame(grid, pointPTR, maxPTR, &gameOver, &gameWon, &alreadyWon, &canUndo, &previousPointCounter, &previousMaxNumber);
