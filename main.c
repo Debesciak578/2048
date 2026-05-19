@@ -328,11 +328,6 @@ void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
 		}
 	}
 }
-/**
-    @brief 
-	@details
-    @param grid - 
-**/
 void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	int empty[GRID_SIZE * GRID_SIZE][2];
 	int empty_counter = 0;
