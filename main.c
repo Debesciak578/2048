@@ -1,3 +1,12 @@
+/*****************************************************************//**
+ * \file   main.c
+ * \brief  Plik zawierajacy wszystkie (oprocz biblioteki Allegro) naglowki, funkcje, zmienne i kod zrodlowy dla gry 2048
+ * 
+ * \author Zespol "Zucyki": Bartek Anton Olgierd
+ * \date   May 2026
+ *********************************************************************/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -10,21 +19,56 @@
 #include <allegro5/allegro_image.h>
 
 
-
+/**
+ * Zmienna globalna ktora odpowiada za ilosc komorek w grze oraz rozmiar okna gry tworzonego przez Allegro (zmienic na zmienna lokalna?).
+ */
 #define GRID_SIZE 4
 
-typedef struct { //struktura jednej komorki, zawiera liczbe, kolor oraz wspolrzedne rogow tej komorki i jej tekstu
+/**
+    @struct Cell
+    @brief  Struktura pojedynczej komorki
+	@param number Wartosc komorki, na ktorej wykonujemy wszystkie obliczenia.
+	@param x1 Wspolrzedna x w lewym gornym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
+	@param y1 Wspolrzedna y w lewym gornym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
+	@param x2 Wspolrzedna x w prawym dolnym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
+	@param y2 Wspolrzedna y w prawym odlnym rogu komorki, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
+	@param textX Wspolrzedna x, potrzebna dla wyznaczenia miejsca wyswietlenia wartosci zamieszczonej w parametrze number
+	@param texty Wspolrzedna y, potrzebna dla wyznaczenia miejsca dla wyswietlenia wartosci zamieszczonej w parametrze number
+	@param numberInCharFormat Wartosc komorki, konwertowana w typ char[] dla mozliwosci wyswietlenia tej komorki za pomoca Allegro
+	@param color Kolor tej komorki, zalezy od jej wartosci
+**/
+typedef struct { 
 	int number;
 	float x1, y1, x2, y2, textX, textY;
 	char numberInCharFormat[8];
 	ALLEGRO_COLOR color;
 } Cell;
 
-
+/**
+ * @brief Funkcja dla przesuniecia komorek w prawo.
+ * @details
+ * Dziala w 4 kroki:
+ * 
+ * 1 -> "otwiera" petle for ktora odpowiada za wierszy macierzy parametru Cell grid[][]
+ * 
+ * 2 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0, 
+ * w petli while "przesuwa" wszystkie wartosci o jedna komorke w prawo, przypisujac elementy number 
+ * i color struktury Cell z komorki z indeksem cur do komorki cur + 1 
+ * ustawiajac number z komorki cur  na 0 i color komorki cur na 255, 255, 255, czyli kolor bialy
+ * 
+ * 3 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
+ * jesli komorki z indeksami j i j - 1 sa jednakowe, number komorki j - 1 ustawia sie na 0,
+ * a number komorki j mnozy sie na 2
+ * 
+ * 4 -> powtorzenie kroku 2 dla usuniecia dziur pomiedzy komorkami utworzonymi po polaczeniu jednakowych komorek
+ * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+ * \param maxNumber Zmienna wskazujaca na licznik maksymalnej wartosci obecnej na planszy dla jego podalszej zmiany za warunku zdobycia wartosci wyzszej od terazniejszego maksymuma (na razie nie uzywany)
+ * \param pointCounter Zmienna wskazujaca na licznik punktow dla jego podalszego zwiekszenia (na razie nie uzywany)
+ */
 void moveGridRight(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter) {
 	for (int i = 0; i < GRID_SIZE; i++) {
 
-		// krok 1 - przesuwamy wszystko w prawo
+
 		for (int j = GRID_SIZE - 2; j >= 0; j--) {
 			if (grid[j][i].number == 0) continue;
 
@@ -65,7 +109,27 @@ void moveGridRight(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCo
 	}
 }
 
-
+/**
+ * @brief Funkcja dla przesuniecia komorek w lewo.
+ * @details
+ * Dziala w 4 kroki:
+ *
+ * 1 -> "otwiera" petle for ktora odpowiada za wierszy macierzy parametru Cell grid[][]
+ *
+ * 2 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
+ * w petli while "przesuwa" wszystkie wartosci o jedna komorke w prawo, przypisujac elementy number
+ * i color struktury Cell z komorki z indeksem cur do komorki cur - 1
+ * ustawiajac number z komorki cur na 0 i color komorki cur na 255, 255, 255, czyli kolor bialy
+ *
+ * 3 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
+ * jesli komorki z indeksami j i j + 1 sa jednakowe, number komorki j + 1 ustawia sie na 0,
+ * a number komorki j mnozy sie na 2
+ *
+ * 4 -> powtorzenie kroku 2 dla usuniecia dziur pomiedzy komorkami utworzonymi po polaczeniu jednakowych komorek
+ * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+ * \param maxNumber Zmienna wskazujaca na licznik maksymalnej wartosci obecnej na planszy dla jego podalszej zmiany za warunku zdobycia wartosci wyzszej od terazniejszego maksymuma (na razie nie uzywany)
+ * \param pointCounter Zmienna wskazujaca na licznik punktow dla jego podalszego zwiekszenia (na razie nie uzywany)
+ */
 void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter) {
 	for (int i = 0; i < GRID_SIZE; i++) {
 
@@ -109,7 +173,27 @@ void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
 		}
 	}
 }
-
+/**
+ * @brief Funkcja dla przesuniecia komorek w gore.
+ * @details
+ * Dziala w 4 kroki:
+ *
+ * 1 -> "otwiera" petle for ktora odpowiada za wierszy macierzy parametru Cell grid[][]
+ *
+ * 2 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
+ * w petli while "przesuwa" wszystkie wartosci o jedna komorke w prawo, przypisujac elementy number
+ * i color struktury Cell z komorki z indeksem cur do komorki cur + 1
+ * ustawiajac number z komorki cur na 0 i color komorki cur na 255, 255, 255, czyli kolor bialy
+ *
+ * 3 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
+ * jesli komorki z indeksami j i j - 1 sa jednakowe, number komorki j - 1 ustawia sie na 0,
+ * a number komorki j mnozy sie na 2
+ *
+ * 4 -> powtorzenie kroku 2 dla usuniecia dziur pomiedzy komorkami utworzonymi po polaczeniu jednakowych komorek
+ * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+ * \param maxNumber Zmienna wskazujaca na licznik maksymalnej wartosci obecnej na planszy dla jego podalszej zmiany za warunku zdobycia wartosci wyzszej od terazniejszego maksymuma (na razie nie uzywany)
+ * \param pointCounter Zmienna wskazujaca na licznik punktow dla jego podalszego zwiekszenia (na razie nie uzywany)
+ */
 void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter) {
 	for (int i = 0; i < GRID_SIZE; i++) {
 
@@ -150,7 +234,27 @@ void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCount
 		}
 	}
 }
-
+/**
+ * @brief Funkcja dla przesuniecia komorek w dol.
+ * @details
+ * Dziala w 4 kroki:
+ *
+ * 1 -> "otwiera" petle for ktora odpowiada za wierszy macierzy parametru Cell grid[][]
+ *
+ * 2 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
+ * w petli while "przesuwa" wszystkie wartosci o jedna komorke w prawo, przypisujac elementy number
+ * i color struktury Cell z komorki z indeksem cur do komorki cur - 1
+ * ustawiajac number z komorki cur na 0 i color komorki cur na 255, 255, 255, czyli kolor bialy
+ *
+ * 3 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
+ * jesli komorki z indeksami j i j + 1 sa jednakowe, number komorki j + 1 ustawia sie na 0,
+ * a number komorki j mnozy sie na 2
+ *
+ * 4 -> powtorzenie kroku 2 dla usuniecia dziur pomiedzy komorkami utworzonymi po polaczeniu jednakowych komorek
+ * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+ * \param maxNumber Zmienna wskazujaca na licznik maksymalnej wartosci obecnej na planszy dla jego podalszej zmiany za warunku zdobycia wartosci wyzszej od terazniejszego maksymuma (na razie nie uzywany)
+ * \param pointCounter Zmienna wskazujaca na licznik punktow dla jego podalszego zwiekszenia (na razie nie uzywany)
+ */
 void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter) {
 	for (int i = 0; i < GRID_SIZE; i++) {
 
@@ -193,7 +297,23 @@ void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
 	}
 }
 
-
+/**
+	* @brief Funkcja wypelniajaca wszystkie dane struktur Cell
+	* @details
+	* Chociaz nazwa mowi o "stworzeniu" planszy, naprawde funkcja poprostu zamiena wartosci na default`owe
+	* 
+	* Za pomoca petli for zagniezdionej w petli for przechodzi przez kazda strukture Cell i wypelnia jej dane:
+	* 
+	* Ustawia number na 0
+	* 
+	* Wylicza wszystkie wspolrzedne rogow dla zgodnie z rozmiarami planszy wyznaczonej przez GRID_SIZE
+	* 
+	* Wylicza wspolrzedne dla odrysowania wartosci number jako tekstu
+	* 
+	* Ustawia color na 255,255,255 (bialy)
+	* 
+    * @param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+**/
 void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	for (int i = 0; i < GRID_SIZE; i++) {
 		for (int j = 0; j < GRID_SIZE; j++) {
@@ -208,7 +328,13 @@ void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
 		}
 	}
 }
+/**
+    @brief Losowo wypelnia jedna komorke wartoscia 2
+	@details
 
+
+    @param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+**/
 void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	int empty[GRID_SIZE * GRID_SIZE][2];
 	int empty_counter = 0;
@@ -258,8 +384,8 @@ void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumb
 void RestartGame(Cell grid[GRID_SIZE][GRID_SIZE], int* pointCounter, int* maxNumber, bool* gameOver, bool* gameWon,
 	bool* alreadyWon, bool* canUndo, int* previousPointCounter, int* previousMaxNumber)
 {
-	CreateGrid(grid);                  // wyczy?? plansz?        
-	CalculateAndFillRandomCell(grid);  //postaw pierwsz? cyfr?
+	CreateGrid(grid);                  // wyczysc plansze        
+	CalculateAndFillRandomCell(grid);  //postaw pierwsza cyfre
 
 	*pointCounter = 0;
 	*maxNumber = 0;
