@@ -194,6 +194,7 @@ void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
  * \param maxNumber Zmienna wskazujaca na licznik maksymalnej wartosci obecnej na planszy dla jego podalszej zmiany za warunku zdobycia wartosci wyzszej od terazniejszego maksymuma (na razie nie uzywany)
  * \param pointCounter Zmienna wskazujaca na licznik punktow dla jego podalszego zwiekszenia (na razie nie uzywany)
  */
+
 void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter) {
 	for (int i = 0; i < GRID_SIZE; i++) {
 
@@ -297,23 +298,24 @@ void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
 	}
 }
 
+
 /**
-	* @brief Funkcja wypelniajaca wszystkie dane struktur Cell.
-	* @details
-	* Chociaz nazwa mowi o "stworzeniu" planszy, naprawde funkcja poprostu zamiena wartosci na default`owe
-	* 
-	* Za pomoca petli for zagniezdionej w petli for przechodzi przez kazda strukture Cell i wypelnia jej dane:
-	* 
-	* Ustawia number na 0
-	* 
-	* Wylicza wszystkie wspolrzedne rogow dla zgodnie z rozmiarami planszy wyznaczonej przez GRID_SIZE
-	* 
-	* Wylicza wspolrzedne dla odrysowania wartosci number jako tekstu
-	* 
-	* Ustawia color na 255,255,255 (bialy)
-	* 
-    * @param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
-*/
+ * @brief Funkcja wypelniajaca wszystkie dane struktur Cell.
+ * 
+ * Chociaz nazwa mowi o "stworzeniu" planszy, naprawde funkcja poprostu zamiena wartosci na defaultowe.
+ * 
+ * Za pomoca petli for zagniezdionej w petli for przechodzi przez kazda strukture Cell i wypelnia jej dane:
+ * 
+ * Ustawia number na 0
+ * 
+ * Wylicza wszystkie wspolrzedne rogow dla zgodnie z rozmiarami planszy wyznaczonej przez GRID_SIZE
+ * 
+ * Wylicza wspolrzedne dla odrysowania wartosci number jako tekstu
+ * 
+ * Ustawia color na 255,255,255 (bialy)
+ * 
+ * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+ */
 void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	for (int i = 0; i < GRID_SIZE; i++) {
 		for (int j = 0; j < GRID_SIZE; j++) {
@@ -328,6 +330,7 @@ void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
 		}
 	}
 }
+
 void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	int empty[GRID_SIZE * GRID_SIZE][2];
 	int empty_counter = 0;
