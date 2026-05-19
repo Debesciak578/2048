@@ -298,7 +298,7 @@ void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
 }
 
 /**
-	* @brief Funkcja wypelniajaca wszystkie dane struktur Cell
+	* @brief Funkcja wypelniajaca wszystkie dane struktur Cell.
 	* @details
 	* Chociaz nazwa mowi o "stworzeniu" planszy, naprawde funkcja poprostu zamiena wartosci na default`owe
 	* 
@@ -313,7 +313,7 @@ void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
 	* Ustawia color na 255,255,255 (bialy)
 	* 
     * @param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
-**/
+*/
 void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	for (int i = 0; i < GRID_SIZE; i++) {
 		for (int j = 0; j < GRID_SIZE; j++) {
@@ -329,11 +329,9 @@ void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	}
 }
 /**
-    @brief Losowo wypelnia jedna komorke wartoscia 2
+    @brief 
 	@details
-
-
-    @param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
+    @param grid - 
 **/
 void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	int empty[GRID_SIZE * GRID_SIZE][2];
@@ -384,8 +382,8 @@ void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumb
 void RestartGame(Cell grid[GRID_SIZE][GRID_SIZE], int* pointCounter, int* maxNumber, bool* gameOver, bool* gameWon,
 	bool* alreadyWon, bool* canUndo, int* previousPointCounter, int* previousMaxNumber)
 {
-	CreateGrid(grid);                  // wyczysc plansze        
-	CalculateAndFillRandomCell(grid);  //postaw pierwsza cyfre
+	CreateGrid(grid);
+	CalculateAndFillRandomCell(grid);  
 
 	*pointCounter = 0;
 	*maxNumber = 0;
