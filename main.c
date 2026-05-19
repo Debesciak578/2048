@@ -328,6 +328,14 @@ void CreateGrid(Cell grid[GRID_SIZE][GRID_SIZE]) {
 		}
 	}
 }
+
+//Funkcja szuka wolnych komórerk i losowo wybiera jedna z nich, w ktorej ustawia wartosc 2, czyli tworzy nowa komorke
+//Przeszukuje ca³¹ plansze i zapisuje wspolrzedne wszystkich komorek z number == 0 do tablicy empty, a potem losuje liczbe od 0 do empty_counter,
+// ktora jest liczba wolnych komorek, i ustawia wartosc 2 w tej komorce
+//Jesli nie ma wolnych komorek, funkcja po prostu sie konczy
+//Ta funkcja jest wywolywana po kazdym ruchu, zeby dodac nowa komorke do planszy
+//Ta funkcja jest tez wywolywana na poczatku gry, zeby dodac pierwsza komorke do planszy
+
 void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	int empty[GRID_SIZE * GRID_SIZE][2];
 	int empty_counter = 0;
@@ -349,6 +357,10 @@ void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	grid[row][column].number = 2;
 }
 //sprawdzenie czy nie ma mozliwosci ruchu
+//Funkcja przechodzi przez cala plansze i sprawdza czy jest jakas komorka z number == 0, jesli tak, to zwraca false, bo gra nie jest przegrana
+//Jesli nie ma komorek z number == 0, funkcja sprawdza czy sa jakies dwie sasiednie komorki o tej samej wartosci, jesli tak, to tez zwraca false, bo gra nie jest przegrana
+//Jesli nie ma ani wolnych komorek, ani sasiednich komorek o tej samej wartosci, funkcja zwraca true, bo gra jest przegrana
+//Ta funkcja jest wywolywana po kazdym ruchu, zeby sprawdzic czy gra nie jest przegrana
 bool checkLoss(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	for (int i = 0; i < GRID_SIZE; i++) {
 		for (int j = 0; j < GRID_SIZE; j++) {
@@ -359,6 +371,13 @@ bool checkLoss(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	}
 	return true;
 }
+//Funkcja rysujaca cala plansze, czyli wszystkie komorki i liczby w nich zawarte, a takze licznik punktow i maksymalnej wartosci
+//Dziala w 3 krokach:
+//1 -> Konwersja licznikow punktow i maksymalnej wartosci do formatu char[] dla mozliwosci wyswietlenia ich za pomoca Allegro
+//2 -> Rysowanie licznikow punktow i maksymalnej wartosci za pomoca al_draw_text
+//3 -> Przechodzenie przez cala plansze za pomoca petli for zagniezdzonej w petle for, konwersja wartosci number kazdej komorki do formatu char[] i rysowanie kazdej
+// komorki za pomoca al_draw_filled_rounded_rectangle, a jesli number komorki jest rozny od 0, to rysowanie tej wartosci za pomoca al_draw_text
+//Ta funkcja jest wywolywana w kazdej klatce, zeby odrysowac cala plansze i wszystkie komorki
 
 void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumber, int maxNumber, char pointCounterInChar[], char maxNumberInChar[]) {
 	sprintf(pointCounterInChar, "%d", pointNumber);
@@ -373,6 +392,12 @@ void DrawGrid(Cell grid[GRID_SIZE][GRID_SIZE], ALLEGRO_FONT* font, int pointNumb
 		}
 	}
 }
+//Funkcja dla restartu gry, wywolywana przy nacisnieciu na R
+//Dziala w 2 krokach:
+//1 -> Wywolanie funkcji CreateGrid dla ustawienia wszystkich wartosci struktur Cell na default`owe
+//2 -> Wywolanie funkcji CalculateAndFillRandomCell dla dodania pierwszej komorki do planszy
+//3 -> Ustawienie wszystkich zmiennych odpowiedzialnych za licznik punktow, maksymalna wartosc, stan gry, mozliwosc cofania, itd. na default`owe
+//Ta funkcja jest wywolywana przy nacisnieciu na R, zeby zrestartowac gre
 
 void RestartGame(Cell grid[GRID_SIZE][GRID_SIZE], int* pointCounter, int* maxNumber, bool* gameOver, bool* gameWon,
 	bool* alreadyWon, bool* canUndo, int* previousPointCounter, int* previousMaxNumber)
@@ -469,16 +494,6 @@ int main() {
 			case ALLEGRO_KEY_C://cofanie guzikiem c
 				if (gameOver || gameWon) { redrawFrame = 0; break; } //blokada cofniecia
 				moveType = NULL;
-				break;
-			case ALLEGRO_KEY_SPACE:
-				if (gameWon) {
-					gameWon = false;
-					alreadyWon = true;
-					skipLogic = true;
-				}
-				else {
-					redrawFrame = 0;
-				}
 				break;
 			case ALLEGRO_KEY_R: //restart gry przy nacisnieciu na R
 				RestartGame(grid, pointPTR, maxPTR, &gameOver, &gameWon, &alreadyWon, &canUndo, &previousPointCounter, &previousMaxNumber);
