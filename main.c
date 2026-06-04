@@ -44,6 +44,23 @@ typedef struct {
 	ALLEGRO_COLOR color;
 } Cell;
 
+ALLEGRO_COLOR getCellColor(int value) {
+	switch (value) {
+	case 2:    return al_map_rgb(238, 228, 218);
+	case 4:    return al_map_rgb(237, 224, 200);
+	case 8:    return al_map_rgb(242, 177, 121);
+	case 16:   return al_map_rgb(245, 149, 99);
+	case 32:   return al_map_rgb(246, 124, 95);
+	case 64:   return al_map_rgb(246, 94, 59);
+	case 128:  return al_map_rgb(237, 207, 114);
+	case 256:  return al_map_rgb(237, 204, 97);
+	case 512:  return al_map_rgb(237, 200, 80);
+	case 1024: return al_map_rgb(237, 197, 63);
+	case 2048: return al_map_rgb(237, 194, 46);
+	default:   return al_map_rgb(255, 255, 255);
+	}
+}
+
 /**
  * @brief Funkcja dla przesuniecia komorek w prawo.
  * @details
@@ -87,6 +104,7 @@ void moveGridRight(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCo
 			if (grid[j][i].number == 0) continue;
 			if (grid[j][i].number == grid[j - 1][i].number) {
 				grid[j][i].number *= 2;
+				grid[j][i].color = getCellColor(grid[j][i].number);
 				grid[j - 1][i].number = 0;
 				grid[j - 1][i].color = al_map_rgb(255, 255, 255);
 
@@ -152,6 +170,7 @@ void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
 			if (grid[j][i].number == 0) continue;
 			if (grid[j][i].number == grid[j + 1][i].number) {
 				grid[j][i].number *= 2;
+				grid[j][i].color = getCellColor(grid[j][i].number);
 				grid[j + 1][i].number = 0;
 				grid[j + 1][i].color = al_map_rgb(255, 255, 255);
 
@@ -215,6 +234,7 @@ void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCount
 			if (grid[i][j].number == 0) continue;
 			if (grid[i][j].number == grid[i][j + 1].number) {
 				grid[i][j].number *= 2;
+				grid[i][j].color = getCellColor(grid[i][j].number);
 				grid[i][j + 1].number = 0;
 				grid[i][j + 1].color = al_map_rgb(255, 255, 255);
 
@@ -277,6 +297,7 @@ void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCou
 
 			if (grid[i][j].number == grid[i][j - 1].number) {
 				grid[i][j].number *= 2;
+				grid[i][j].color = getCellColor(grid[i][j].number);
 				grid[i][j - 1].number = 0;
 				grid[i][j - 1].color = al_map_rgb(255, 255, 255);
 
@@ -365,6 +386,7 @@ void CalculateAndFillRandomCell(Cell grid[GRID_SIZE][GRID_SIZE]) {
 	int column = empty[generateRandomPoint][1];
 
 	grid[row][column].number = 2;
+	grid[row][column].color = getCellColor(2);
 }
 
 
