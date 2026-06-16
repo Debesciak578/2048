@@ -523,6 +523,11 @@ int main() {
 
 	int pointCounter = 0;
 	int maxNumber = 0;
+
+	int highScore = 0;       
+	int moveCounter = 0;    
+	time_t startTime = time(NULL);
+
 	int* pointPTR = &pointCounter;
 	int* maxPTR = &maxNumber;
 	char pointCounterInChar[12];
@@ -618,6 +623,7 @@ int main() {
 
 
 						moveType(grid, maxPTR, pointPTR);
+						moveCounter++;
 						pointCounter = 0;
 						for (int i = 0; i < GRID_SIZE; i++) {
 							for (int j = 0; j < GRID_SIZE; j++) {
@@ -625,6 +631,7 @@ int main() {
 								if (maxNumber < grid[i][j].number) maxNumber = grid[i][j].number;
 							}
 						}
+						if (pointCounter > highScore) highScore = pointCounter;
 						CalculateAndFillRandomCell(grid);
 
 						//sprawdzenie czy wygrana lub przegrana
@@ -640,8 +647,33 @@ int main() {
 			//wypisanie ekranow przegranej i wygranej
 			int size = GRID_SIZE * 150 + 200;
 			if (gameOver) {
+				char buffer[128];
+				int gameTime = (int)(time(NULL) - startTime);
+
 				al_draw_filled_rectangle(0, 0, size, size, al_map_rgba(0, 0, 0, 210));
-				al_draw_text(font, al_map_rgb(255, 50, 50), size / 2, size / 2, ALLEGRO_ALIGN_CENTER, "PRZEGRANA!");
+
+				al_draw_text(font, al_map_rgb(255, 50, 50), size / 2, size / 2 - 200,
+					ALLEGRO_ALIGN_CENTER, "PRZEGRANA!");
+
+				sprintf(buffer, "Wynik: %d", pointCounter);
+				al_draw_text(font, al_map_rgb(255, 255, 255), size / 2, size / 2 - 120,
+					ALLEGRO_ALIGN_CENTER, buffer);
+
+				sprintf(buffer, "Najwiekszy: %d", maxNumber);
+				al_draw_text(font, al_map_rgb(255, 255, 255), size / 2, size / 2 - 60,
+					ALLEGRO_ALIGN_CENTER, buffer);
+
+				sprintf(buffer, "Ruchy: %d", moveCounter);
+				al_draw_text(font, al_map_rgb(255, 255, 255), size / 2, size / 2,
+					ALLEGRO_ALIGN_CENTER, buffer);
+
+				sprintf(buffer, "Czas: %d s", gameTime);
+				al_draw_text(font, al_map_rgb(255, 255, 255), size / 2, size / 2 + 60,
+					ALLEGRO_ALIGN_CENTER, buffer);
+
+				sprintf(buffer, "Rekord: %d", highScore);
+				al_draw_text(font, al_map_rgb(255, 255, 255), size / 2, size / 2 + 120,
+					ALLEGRO_ALIGN_CENTER, buffer);
 			}
 			else if (gameWon) {
 				al_draw_filled_rectangle(0, 0, size, size, al_map_rgba(237, 194, 46, 200));
