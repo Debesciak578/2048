@@ -191,80 +191,27 @@ void moveGrid(Cell grid[GRID_SIZE][GRID_SIZE], enum Direction direction, int* ma
 }
 
 
-/**
- * @brief Funkcja dla przesuniecia komorek w prawo.
- * @details
- * Dziala w 4 kroki:
- *
- * 1 -> "otwiera" petle for ktora odpowiada za wierszy macierzy parametru Cell grid[][]
- *
- * 2 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
- * w petli while "przesuwa" wszystkie wartosci o jedna komorke w prawo, przypisujac elementy number
- * i color struktury Cell z komorki z indeksem cur do komorki cur + 1
- * ustawiajac number z komorki cur  na 0 i color komorki cur na 255, 255, 255, czyli kolor bialy
- *
- * 3 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
- * jesli komorki z indeksami j i j - 1 sa jednakowe, number komorki j - 1 ustawia sie na 0,
- * a number komorki j mnozy sie na 2
- *
- * 4 -> powtorzenie kroku 2 dla usuniecia dziur pomiedzy komorkami utworzonymi po polaczeniu jednakowych komorek
- * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
- * \param maxNumber Zmienna wskazujaca na licznik maksymalnej wartosci obecnej na planszy dla jego podalszej zmiany za warunku zdobycia wartosci wyzszej od terazniejszego maksymuma (na razie nie uzywany)
- * \param pointCounter Zmienna wskazujaca na licznik punktow dla jego podalszego zwiekszenia (na razie nie uzywany)
- */
+// Funkcje dla kazdego kierunku, ktore wywoluja funkcje moveGrid z odpowiednim kierunkiem
+// Te funkcje sa potrzebne, zeby moc ustawic wskaznik moveType na odpowiednia funkcje przesuwajaca komorki w odpowiednim kierunku, przy nacisnieciu na strzalki
+// bez tych funkcji, nie mozna by bylo ustawic tego wskaznika, bo moveGrid potrzebuje dodatkowych argumentow, ktore sa przekazywane przez te funkcje
+// Te funkcje sa wywolywane przy nacisnieciu na strzalki, zeby przesunac komorki w odpowiednim kierunku
+// Sa tez potrzebne, zeby moc ustawic wskaznik moveType na NULL, co powoduje cofniecie ruchu, przy nacisnieciu na C
+// bez tych funkcji, nie mozna by bylo ustawic tego wskaznika na NULL, bo moveGrid potrzebuje dodatkowych argumentow, ktore sa przekazywane przez te funkcje
+// Funkcje te sa tez wymagene, zeby moc zablokowac ruszanie sie, czyli ustawienie wskaznika moveType na funkcje przesuwajaca, przy przegranej
+// lub wygranej, i jedynie mozna nacisnac R, zeby zrestartowac gre
 void moveGridRight(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter)
 {
 	moveGrid(grid, RIGHT, maxNumber, pointCounter);
 }
 
-/**
- * @brief Funkcja dla przesuniecia komorek w lewo.
- * @details
- * Dziala w 4 kroki:
- *
- * 1 -> "otwiera" petle for ktora odpowiada za wierszy macierzy parametru Cell grid[][]
- *
- * 2 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
- * w petli while "przesuwa" wszystkie wartosci o jedna komorke w prawo, przypisujac elementy number
- * i color struktury Cell z komorki z indeksem cur do komorki cur - 1
- * ustawiajac number z komorki cur na 0 i color komorki cur na 255, 255, 255, czyli kolor bialy
- *
- * 3 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
- * jesli komorki z indeksami j i j + 1 sa jednakowe, number komorki j + 1 ustawia sie na 0,
- * a number komorki j mnozy sie na 2
- *
- * 4 -> powtorzenie kroku 2 dla usuniecia dziur pomiedzy komorkami utworzonymi po polaczeniu jednakowych komorek
- * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
- * \param maxNumber Zmienna wskazujaca na licznik maksymalnej wartosci obecnej na planszy dla jego podalszej zmiany za warunku zdobycia wartosci wyzszej od terazniejszego maksymuma (na razie nie uzywany)
- * \param pointCounter Zmienna wskazujaca na licznik punktow dla jego podalszego zwiekszenia (na razie nie uzywany)
- */
+
 void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE],
 	int* maxNumber,
 	int* pointCounter)
 {
 	moveGrid(grid, LEFT, maxNumber, pointCounter);
 }
-/**
- * @brief Funkcja dla przesuniecia komorek w gore.
- * @details
- * Dziala w 4 kroki:
- *
- * 1 -> "otwiera" petle for ktora odpowiada za wierszy macierzy parametru Cell grid[][]
- *
- * 2 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
- * w petli while "przesuwa" wszystkie wartosci o jedna komorke w prawo, przypisujac elementy number
- * i color struktury Cell z komorki z indeksem cur do komorki cur + 1
- * ustawiajac number z komorki cur na 0 i color komorki cur na 255, 255, 255, czyli kolor bialy
- *
- * 3 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
- * jesli komorki z indeksami j i j - 1 sa jednakowe, number komorki j - 1 ustawia sie na 0,
- * a number komorki j mnozy sie na 2
- *
- * 4 -> powtorzenie kroku 2 dla usuniecia dziur pomiedzy komorkami utworzonymi po polaczeniu jednakowych komorek
- * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
- * \param maxNumber Zmienna wskazujaca na licznik maksymalnej wartosci obecnej na planszy dla jego podalszej zmiany za warunku zdobycia wartosci wyzszej od terazniejszego maksymuma (na razie nie uzywany)
- * \param pointCounter Zmienna wskazujaca na licznik punktow dla jego podalszego zwiekszenia (na razie nie uzywany)
- */
+
 
 void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE],
 	int* maxNumber,
@@ -272,27 +219,7 @@ void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE],
 {
 	moveGrid(grid, UP, maxNumber, pointCounter);
 }
-/**
- * @brief Funkcja dla przesuniecia komorek w dol.
- * @details
- * Dziala w 4 kroki:
- *
- * 1 -> "otwiera" petle for ktora odpowiada za wierszy macierzy parametru Cell grid[][]
- *
- * 2 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
- * w petli while "przesuwa" wszystkie wartosci o jedna komorke w prawo, przypisujac elementy number
- * i color struktury Cell z komorki z indeksem cur do komorki cur - 1
- * ustawiajac number z komorki cur na 0 i color komorki cur na 255, 255, 255, czyli kolor bialy
- *
- * 3 -> "otwiera" petle for ktora odpowiada za kolumny, szuka komorki z wartosciami roznymi od 0,
- * jesli komorki z indeksami j i j + 1 sa jednakowe, number komorki j + 1 ustawia sie na 0,
- * a number komorki j mnozy sie na 2
- *
- * 4 -> powtorzenie kroku 2 dla usuniecia dziur pomiedzy komorkami utworzonymi po polaczeniu jednakowych komorek
- * \param grid Odnosi sie do macierzy struktur typu Cell; nadaje dostep do wszystkich potrzebnych danych dla "przesuniecia" komorek za pomoca przechowania struktur w tabele dwuwymiarowej, na danych ktorej potem wykonujemy operacje
- * \param maxNumber Zmienna wskazujaca na licznik maksymalnej wartosci obecnej na planszy dla jego podalszej zmiany za warunku zdobycia wartosci wyzszej od terazniejszego maksymuma (na razie nie uzywany)
- * \param pointCounter Zmienna wskazujaca na licznik punktow dla jego podalszego zwiekszenia (na razie nie uzywany)
- */
+
 void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE],
 	int* maxNumber,
 	int* pointCounter)
@@ -475,7 +402,8 @@ void RestartGame(Cell grid[GRID_SIZE][GRID_SIZE], int* pointCounter, int* maxNum
 	*canUndo = false;
 }
 
-
+// Glowna funkcja, w ktorej znajduje sie petla gry, obsluga zdarzen, rysowanie planszy, sprawdzanie stanu gry, itd
+// Ta funkcja jest glowna funkcja, w ktorej znajduje sie petla gry, obsluga zdarzen, rysowanie planszy, sprawdzanie stanu gry, itd
 int main() {
 	al_init();
 	al_init_font_addon();
@@ -536,7 +464,18 @@ int main() {
 	while (true) {
 		al_wait_for_event(event_queue, &event);
 
-
+		//obs³uga zdarzeñ
+		//obs³uga klawiszy
+		//przy nacisnieciu na strzalki, ustawia sie wskaznik moveType na odpowiednia funkcje przesuwajaca komorki w odpowiednim kierunku, a przy
+		// nacisnieciu na C, ustawia sie ten wskaznik na NULL, co powoduje cofniecie ruchu
+		// przy nacisnieciu na R, wywoluje sie funkcja RestartGame, ktora resetuje cala gre do stanu poczatkowego
+		// jesli gra jest przegrana lub wygrana, to zablokowane jest ruszanie sie, czyli ustawienie wskaznika moveType na funkcje przesuwajaca, a jedynie 
+		// mozna nacisnac R, zeby zrestartowac gre
+		// przy kazdym nacisnieciu na strzalki, ustawia sie zmienna redrawFrame na 1, co powoduje odrysowanie calej planszy, a przy nacisnieciu na
+		// inne klawisze, redrawFrame jest ustawiane na 0, zeby nie odrysowywac planszy bez potrzeby
+		// przy kazdym ruchu, jesli redrawFrame jest 1, to odrysowywana jest cala plansza, a jesli jest 0, to plansza nie
+		// jest odrysowywana, zeby nie obciazac niepotrzebnie procesora
+		
 		if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
 			redrawFrame = 1;
 			switch (event.keyboard.keycode) {
@@ -585,6 +524,8 @@ int main() {
 			if (!skipLogic) {
 				if (moveType == NULL) {
 					//podmiana na stare wartosci
+					//jesli jest mozliwosc cofniecia ruchu, to przy nacisnieciu na C, przywroc wszystkie dane z poprzedniego 
+					// ruchu do planszy, czyli podmien wszystkie wartosci struktur Cell na te z poprzedniego ruchu, a takze licznik punktow i maksymalna wartosc
 					if (canUndo) {
 						for (int i = 0; i < GRID_SIZE; i++)
 							for (int j = 0; j < GRID_SIZE; j++) grid[i][j] = previousGrid[i][j];
@@ -596,6 +537,7 @@ int main() {
 				else {
 					if (!gameOver && !gameWon) {
 						//zapis planszy odpamieci
+						//zapisanie wszystkich danych z planszy do zmiennych poprzednich, zeby moc potem przy cofnieciu ruchu, przywrocic te dane do planszy
 						for (int i = 0; i < GRID_SIZE; i++)
 							for (int j = 0; j < GRID_SIZE; j++) previousGrid[i][j] = grid[i][j];
 						previousPointCounter = pointCounter;
@@ -626,6 +568,9 @@ int main() {
 			DrawGrid(grid, font, pointCounter, maxNumber, pointCounterInChar, maxNumberInChar);
 
 			//wypisanie ekranow przegranej i wygranej
+			//jesli gra jest przegrana, to wyswietla sie ekran przegranej z
+			// wynikiem, maksymalna wartoscia, liczba ruchow, czas gry, rekordem, i informacja o tym, zeby nacisnac R zeby zaczac od nowa
+			// jesli gra jest wygrana, to wyswietla sie ekran wygranej z informacja o tym, zeby nacisnac R zeby zaczac od nowa
 			int size = GRID_SIZE * 150 + 200;
 			if (gameOver) {
 				char buffer[128];
@@ -676,6 +621,8 @@ int main() {
 			break;
 		}
 	}
+	//zwalnianie pamieci
+	//Zwalnianie pamieci dla wszystkich zasobow Allegro, takich jak bitmapy, dzwieki, fonty, timer, event queue, itd
 	if (background_img) al_destroy_bitmap(background_img);
 	if (click_sound) al_destroy_sample(click_sound);
 	al_destroy_font(font);
