@@ -43,7 +43,11 @@ typedef struct {
 	char numberInCharFormat[8];
 	ALLEGRO_COLOR color;
 } Cell;
-
+//Funkcja zwracajaca kolor komorki, zalezy od jej wartosci, potrzebna dla poprawnego wyswietlenia komorki na ekranie gracza
+//Jest wywolywana w funkcji moveGrid, zeby ustawic kolor komorki po jej przesunieciu
+//Jesli wartosc komorki jest rozna od 0, to kolor tej komorki jest ustawiany na ten zwracany przez 
+// ta funkcje, a jesli wartosc komorki jest rowna 0, to kolor tej komorki jest ustawiany na bialy
+//Wywo³ywana jest tez w funkcji CalculateAndFillRandomCell, zeby ustawic kolor nowo dodanej komorki
 ALLEGRO_COLOR getCellColor(int value) {
 	switch (value) {
 	case 2:    return al_map_rgb(238, 228, 218);
@@ -67,6 +71,9 @@ typedef enum Direction
 	LEFT, RIGHT, UP, DOWN
 };
 
+// Funkcja przesuwajaca komorki w odpowiednim kierunku, laczaca je, i aktualizujaca ich wartosci i kolory
+// Ta funkcja jest wywolywana przez funkcje moveGridRight, moveGridLeft, moveGridUp, moveGridDown, z odpowiednim kierunkiem, przy nacisnieciu na strzalki
+//Wymaga przekazania wskaznika do funkcji, zeby moc ustawic ten wskaznik na NULL, co powoduje cofniecie ruchu, przy nacisnieciu na C
 
 void moveGrid(Cell grid[GRID_SIZE][GRID_SIZE], enum Direction direction, int* maxNumber, int* pointCounter)
 {
