@@ -655,6 +655,10 @@ int main() {
 				sprintf(buffer, "Rekord: %d", highScore);
 				al_draw_text(font, al_map_rgb(255, 255, 255), size / 2, size / 2 + 120,
 					ALLEGRO_ALIGN_CENTER, buffer);
+
+				sprintf(buffer, "Nacisnij R zeby zaczaz od nowa!");
+				al_draw_text(font, al_map_rgb(255, 255, 255), size / 2, size / 2 + 180,
+					ALLEGRO_ALIGN_CENTER, buffer);
 			}
 			else if (gameWon) {
 				al_draw_filled_rectangle(0, 0, size, size, al_map_rgba(237, 194, 46, 200));
