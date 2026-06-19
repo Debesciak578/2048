@@ -48,6 +48,11 @@ typedef struct {
 //Jesli wartosc komorki jest rozna od 0, to kolor tej komorki jest ustawiany na ten zwracany przez 
 // ta funkcje, a jesli wartosc komorki jest rowna 0, to kolor tej komorki jest ustawiany na bialy
 //Wywo³ywana jest tez w funkcji CalculateAndFillRandomCell, zeby ustawic kolor nowo dodanej komorki
+/**
+    @brief  Funkcja zwracajaca kolor w zgodnosci z otrzymana wartoscia.
+    @param  value Przekana wartosc z pojedynczej komorki
+    @retval RGB kod koloru dla renderowania komorki w odpowiednim kolorze
+**/
 ALLEGRO_COLOR getCellColor(int value) {
 	switch (value) {
 	case 2:    return al_map_rgb(238, 228, 218);
@@ -65,7 +70,12 @@ ALLEGRO_COLOR getCellColor(int value) {
 	}
 }
 
+/**
+    @enum  Direction.
+    @brief Enum zawierajacy mozliwe kierunki ruchu
 
+	W zaleznocsi od obranego kierunki, zmieniaja sie obliczenia w funkcji moveGrid()
+**/
 typedef enum Direction
 {
 	LEFT, RIGHT, UP, DOWN
@@ -75,6 +85,21 @@ typedef enum Direction
 // Ta funkcja jest wywolywana przez funkcje moveGridRight, moveGridLeft, moveGridUp, moveGridDown, z odpowiednim kierunkiem, przy nacisnieciu na strzalki
 //Wymaga przekazania wskaznika do funkcji, zeby moc ustawic ten wskaznik na NULL, co powoduje cofniecie ruchu, przy nacisnieciu na C
 
+/**
+    @brief Funkcja przesuwajaca komorki w odpowiednim kierunku, laczaca je, i aktualizujaca ich wartosci i kolory.
+    @param grid Nadaje dostep do planszy i jej komorek
+    @param direction Wskazuje na kierunek ruchu
+    @param maxNumber Zmienia maksymalna uzyskana wartosc
+    @param pointCounter Zmienia ilosc zdobytych punktow
+
+	Ta funkcja jest wywolywana przez funkcje moveGridRight, moveGridLeft, moveGridUp, moveGridDown, z odpowiednim kierunkiem, przy nacisnieciu na strzalki
+	Wymaga przekazania wskaznika do funkcji, zeby moc ustawic ten wskaznik na NULL, co powoduje cofniecie ruchu, przy nacisnieciu na C
+	Dziala w kilka krokow:
+	1 -> maksymalne przesuniecie w odpowiedni kierunek wszystkich komorek
+	2 -> laczenie komorek z taka sama wartoscia
+	3 -> kolejne przesuniecie dla usuniecia utworzonych przez laczenie luk
+	4 -> pobieranie koloru komorki zgodnie z wartosciami
+**/
 void moveGrid(Cell grid[GRID_SIZE][GRID_SIZE], enum Direction direction, int* maxNumber, int* pointCounter)
 {
 	for (int line = 0; line < GRID_SIZE; line++)
@@ -198,20 +223,30 @@ void moveGrid(Cell grid[GRID_SIZE][GRID_SIZE], enum Direction direction, int* ma
 }
 
 
-// Funkcje dla kazdego kierunku, ktore wywoluja funkcje moveGrid z odpowiednim kierunkiem
-// Te funkcje sa potrzebne, zeby moc ustawic wskaznik moveType na odpowiednia funkcje przesuwajaca komorki w odpowiednim kierunku, przy nacisnieciu na strzalki
-// bez tych funkcji, nie mozna by bylo ustawic tego wskaznika, bo moveGrid potrzebuje dodatkowych argumentow, ktore sa przekazywane przez te funkcje
-// Te funkcje sa wywolywane przy nacisnieciu na strzalki, zeby przesunac komorki w odpowiednim kierunku
-// Sa tez potrzebne, zeby moc ustawic wskaznik moveType na NULL, co powoduje cofniecie ruchu, przy nacisnieciu na C
-// bez tych funkcji, nie mozna by bylo ustawic tego wskaznika na NULL, bo moveGrid potrzebuje dodatkowych argumentow, ktore sa przekazywane przez te funkcje
-// Funkcje te sa tez wymagene, zeby moc zablokowac ruszanie sie, czyli ustawienie wskaznika moveType na funkcje przesuwajaca, przy przegranej
-// lub wygranej, i jedynie mozna nacisnac R, zeby zrestartowac gre
+
+/**
+    @brief Funkcja przesuwajaca w prawo.
+    @param grid Nadaje dostep do planszy i jej komorek
+	@param maxNumber Zmienia maksymalna uzyskana wartosc
+	@param pointCounter Zmienia ilosc zdobytych punktow
+
+	Te funkcje sa wywolywane przy nacisnieciu na strzalki, zeby przesunac komorki w odpowiednim kierunku
+	Sa tez potrzebne, zeby moc ustawic wskaznik moveType na NULL, co powoduje cofniecie ruchu, przy nacisnieciu na C
+**/
 void moveGridRight(Cell grid[GRID_SIZE][GRID_SIZE], int* maxNumber, int* pointCounter)
 {
 	moveGrid(grid, RIGHT, maxNumber, pointCounter);
 }
 
+/**
+    @brief Funkcja przesuwajaca w lewo.
+	@param grid Nadaje dostep do planszy i jej komorek
+	@param maxNumber Zmienia maksymalna uzyskana wartosc
+	@param pointCounter Zmienia ilosc zdobytych punktow
 
+	Te funkcje sa wywolywane przy nacisnieciu na strzalki, zeby przesunac komorki w odpowiednim kierunku
+	Sa tez potrzebne, zeby moc ustawic wskaznik moveType na NULL, co powoduje cofniecie ruchu, przy nacisnieciu na C
+**/
 void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE],
 	int* maxNumber,
 	int* pointCounter)
@@ -219,6 +254,15 @@ void moveGridLeft(Cell grid[GRID_SIZE][GRID_SIZE],
 	moveGrid(grid, LEFT, maxNumber, pointCounter);
 }
 
+/**
+    @brief Funkcja przesuwajaca w gore.
+	@param grid Nadaje dostep do planszy i jej komorek
+	@param maxNumber Zmienia maksymalna uzyskana wartosc
+	@param pointCounter Zmienia ilosc zdobytych punktow
+
+	Te funkcje sa wywolywane przy nacisnieciu na strzalki, zeby przesunac komorki w odpowiednim kierunku
+	Sa tez potrzebne, zeby moc ustawic wskaznik moveType na NULL, co powoduje cofniecie ruchu, przy nacisnieciu na C
+**/
 
 void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE],
 	int* maxNumber,
@@ -227,6 +271,15 @@ void moveGridUp(Cell grid[GRID_SIZE][GRID_SIZE],
 	moveGrid(grid, UP, maxNumber, pointCounter);
 }
 
+/**
+    @brief Funkcja przesuwajaca w dol.
+	@param grid Nadaje dostep do planszy i jej komorek
+	@param maxNumber Zmienia maksymalna uzyskana wartosc
+	@param pointCounter Zmienia ilosc zdobytych punktow
+
+	Te funkcje sa wywolywane przy nacisnieciu na strzalki, zeby przesunac komorki w odpowiednim kierunku
+	Sa tez potrzebne, zeby moc ustawic wskaznik moveType na NULL, co powoduje cofniecie ruchu, przy nacisnieciu na C
+**/
 void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE],
 	int* maxNumber,
 	int* pointCounter)
@@ -238,7 +291,7 @@ void moveGridDown(Cell grid[GRID_SIZE][GRID_SIZE],
 /**
  * @brief Funkcja wypelniajaca wszystkie dane struktur Cell.
  *
- * Chociaz nazwa mowi o "stworzeniu" planszy, naprawde funkcja poprostu zamiena wartosci na defaultowe.
+ * Chociaz nazwa mowi o "stworzeniu" planszy, naprawde funkcja poprostu zamienia wartosci na defaultowe.
  *
  * Za pomoca petli for zagniezdionej w petli for przechodzi przez kazda strukture Cell i wypelnia jej dane:
  *
@@ -409,8 +462,13 @@ void RestartGame(Cell grid[GRID_SIZE][GRID_SIZE], int* pointCounter, int* maxNum
 	*canUndo = false;
 }
 
-// Glowna funkcja, w ktorej znajduje sie petla gry, obsluga zdarzen, rysowanie planszy, sprawdzanie stanu gry, itd
-// Ta funkcja jest glowna funkcja, w ktorej znajduje sie petla gry, obsluga zdarzen, rysowanie planszy, sprawdzanie stanu gry, itd
+
+/**
+    @brief  Glowna funkcja, w ktorej znajduje sie petla gry, obsluga zdarzen, rysowanie planszy, sprawdzanie stanu gry, itd.
+    @retval Zwraca kod zakonczenia programu
+
+
+**/
 int main() {
 	al_init();
 	al_init_font_addon();
